@@ -1,5 +1,6 @@
 import {Team} from './../Enums/Team';
 import {Direction} from './../Enums/Direction';
+import {Orientation} from './../Enums/Orientation';
 
 /**
  * This class represents a position on the board
@@ -9,10 +10,10 @@ class Position {
     // Initialise variables
     private team: Team;
     private isNode: boolean;
-    private upNode: Position;
-    private downNode: Position;
-    private leftNode: Position;
-    private rightNode: Position;
+    private upNode?: Position;
+    private downNode?: Position;
+    private leftNode?: Position;
+    private rightNode?: Position;
     private index: number;
     private millCounter: number;
 
@@ -62,7 +63,7 @@ class Position {
     /**
      * @returns Whether this position is a home position
     */
-    public getNeighbour(direction: Direction): Position {
+    public getNeighbour(direction: Direction): Position | undefined {
         switch (direction) {
             case Direction.Up:
                 return this.upNode;
@@ -110,5 +111,55 @@ class Position {
      */
     public removeToken() {
         this.team = Team.None;
+    }
+
+    /**
+     * @returns Orientation of the mill this position is part of, if any
+     */
+    public checkMill(): Orientation {
+        let millVertical = this.checkOrientation(Orientation.Vertical);
+        let millHorizontal = this.checkOrientation(Orientation.Horizontal);
+        if (millVertical && millHorizontal) {
+            return Orientation.Both;
+        }
+        else if (millVertical) {
+            return Orientation.Vertical;
+        }
+        else if (millHorizontal) {
+            return Orientation.Horizontal;
+        }
+        else {
+            return Orientation.None;
+        }
+    }
+
+    /**
+     * Checks whether this position is part of a mill in a given orientation
+     * @param orientation Orientation to check for a mill
+     * @returns Whether this position is part of a mill in the given orientation
+     */
+    private checkOrientation(orientation: Orientation): boolean {
+        switch (orientation) {
+            case Orientation.Vertical:
+                if (this.checkDirection(Direction.Up) + this.checkDirection(Direction.Down) == 2) {
+                    return true;
+                }
+                break;
+            case Orientation.Horizontal:
+                if (this.checkDirection(Direction.Left) + this.checkDirection(Direction.Right) == 2) {
+                    return true;
+                }
+                break;
+            }
+        return false;
+    }
+
+    public checkDirection(direction: Direction): number {
+        let neighbour = this.getNeighbour(direction);
+        if (neighbour && neighbour.getTeam() == this.getTeam()) {
+            let counter = neighbour.checkDirection(direction);
+            return counter += 1;
+        }
+        return 0;
     }
 }
