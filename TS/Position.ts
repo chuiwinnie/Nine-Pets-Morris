@@ -95,4 +95,20 @@ class Position {
     public getMillCounter(): number {
         return this.millCounter;
     }
+
+    /**
+     * Places a team's token onto this position
+     * There is no validation done here, validation must be done by whatever function calls this method
+     * @param team Team that occupies this position
+     */
+    public placeToken(team: Team) {
+        this.team = team;
+    }
+
+    /**
+     * Removes a team's token from this position
+     */
+    public removeToken() {
+        this.team = Team.None;
+    }
 }
