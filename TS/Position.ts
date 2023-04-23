@@ -154,6 +154,10 @@ class Position {
         return false;
     }
 
+    /**
+     * @param direction Direction to check for a neighbour
+     * @returns Number of consecutive neighbours that belong to the same team in the given direction
+     */
     public checkDirection(direction: Direction): number {
         let neighbour = this.getNeighbour(direction);
         if (neighbour && neighbour.getTeam() == this.getTeam()) {
@@ -161,5 +165,47 @@ class Position {
             return counter += 1;
         }
         return 0;
+    }
+
+    public updateMillCounterOrientation(orientation: Orientation, addingMill: boolean) {
+        this.updateMillCounter(addingMill);
+        switch (orientation) {
+            case Orientation.Vertical:
+                this.updateMillCounterDirection(Direction.Up, addingMill);
+                this.updateMillCounterDirection(Direction.Down, addingMill);
+                break;
+            case Orientation.Horizontal:
+                this.updateMillCounterDirection(Direction.Left, addingMill);
+                this.updateMillCounterDirection(Direction.Right, addingMill);
+                break;
+            case Orientation.Both:
+                this.updateMillCounterDirection(Direction.Up, addingMill);
+                this.updateMillCounterDirection(Direction.Down, addingMill);
+                this.updateMillCounterDirection(Direction.Left, addingMill);
+                this.updateMillCounterDirection(Direction.Right, addingMill);
+                break;
+            case Orientation.None:
+                break;
+        }
+    }
+
+    private updateMillCounterDirection(direction: Direction, addingMill: boolean) {
+        let neighbour = this.getNeighbour(direction);
+        if (neighbour) {
+            neighbour.updateMillCounter(addingMill);
+            neighbour.updateMillCounterDirection(direction, addingMill);
+        }
+
+    }
+
+    private updateMillCounter(addingMill: boolean) {
+        switch (addingMill) {
+            case true:
+                this.millCounter += 1;
+                break;
+            case false:
+                this.millCounter -= 1;
+                break;
+        }
     }
 }
