@@ -1,4 +1,5 @@
 import {Team} from './../Enums/Team';
+import {Direction} from './../Enums/Direction';
 
 /**
  * This class represents a position on the board
@@ -13,7 +14,7 @@ class Position {
     private leftNode: Position;
     private rightNode: Position;
     private index: number;
-    private millCount: number;
+    private millCounter: number;
 
     /**
      * Constructor for Position
@@ -25,6 +26,73 @@ class Position {
         this.team = team;
         this.isNode = isNode;
         this.index = index;
-        this.millCount = 0;
+        this.millCounter = 0;
+    }
+
+    /**
+     * Set a neighbouring position, depending on the direction
+     * @param direction Direction of the neighbour
+     * @param neighbour Neighbouring position
+     */
+    public setNode(direction: Direction, neighbour: Position) {
+        switch (direction) {
+            case Direction.Up:
+                this.upNode = neighbour;
+                break;
+            case Direction.Down:
+                this.downNode = neighbour;
+                break;
+            case Direction.Left:
+                this.leftNode = neighbour;
+                break;
+            case Direction.Right:
+                this.rightNode = neighbour;
+                break;
+        }
+    }
+
+    // Getters and setters
+    /**
+     * @returns Team that occupies this position
+     */
+    public getTeam(): Team {
+        return this.team;
+    }
+
+    /**
+     * @returns Whether this position is a home position
+    */
+    public getNeighbour(direction: Direction): Position {
+        switch (direction) {
+            case Direction.Up:
+                return this.upNode;
+            case Direction.Down:
+                return this.downNode;
+            case Direction.Left:
+                return this.leftNode;
+            case Direction.Right:
+                return this.rightNode;
+        }
+    }
+ 
+    /**
+     * @returns Whether this position is a home position
+     */
+    public getIsNode(): boolean {
+        return this.isNode;
+    }
+
+    /**
+     * @returns Index of this position
+     */
+    public getIndex(): number {
+        return this.index;
+    }
+
+    /**
+     * @returns Number of mills this position is part of
+     */
+    public getMillCounter(): number {
+        return this.millCounter;
     }
 }
