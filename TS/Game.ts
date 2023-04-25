@@ -59,7 +59,8 @@ export class Game {
      * @returns boolean - True if the victory condition has not been met, false otherwise.
      */
     public checkVictory(currentBoard: Board){
-        if (currentBoard.nonPlayingTeam.getNumAliveTokens()<3){
+        let currentTeam = currentBoard.getCurrentTeam()
+        if (currentTeam.getNumAliveTokens()<3){
             return false
         }
         return true
