@@ -33,14 +33,15 @@ export class Board {
         //check if player moving a token from one place to a target position
         if (movingToken){
             //check if the token belongs to the player
-            if (team != Player[this.currentPlayer]){
+            if ((team) && (team != this.currentPlayer)){
                 return false;
-        }
+            }
         //if it is removing opponent's token
-        else{
+        } else {
             //check if player select oponent's token
-            if (team == this.playingTeam){
+            if (team == this.currentPlayer){
                 return false;
+            }
         }
         //check if the token form a mill before remove
         let orientation = this.positions[index].checkMill();
@@ -48,9 +49,10 @@ export class Board {
             //update the other tokens that in the same mill
             this.positions[index].updateMillCounterOrientation(orientation, false);
             this.positions[index].removeToken();
-        }
+            }
         return true;
     }
+    
     public placeToken(index: number){
         let team = this.positions[index].getPlayer();
         
