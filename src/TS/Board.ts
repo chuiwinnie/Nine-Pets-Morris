@@ -1,5 +1,5 @@
 import { Player } from '../Enums/Player';
-import { Orientation } from './../Enums/Orientation';
+import { Orientation } from '../Enums/Orientation';
 import { Position } from './Position';
 import { Team } from './Team';
 

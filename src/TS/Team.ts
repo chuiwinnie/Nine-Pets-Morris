@@ -1,4 +1,4 @@
-import { Player } from "./../Enums/Player";
+import { Player } from "../Enums/Player";
 
 export class Team {
     private player: Player;

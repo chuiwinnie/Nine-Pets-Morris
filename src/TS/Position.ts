@@ -1,6 +1,6 @@
 import { Player } from '../Enums/Player';
-import { Direction } from './../Enums/Direction';
-import { Orientation } from './../Enums/Orientation';
+import { Direction } from '../Enums/Direction';
+import { Orientation } from '../Enums/Orientation';
 
 /**
  * This class represents a position on the board
