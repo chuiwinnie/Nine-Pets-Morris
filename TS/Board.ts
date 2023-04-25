@@ -10,7 +10,17 @@ export class Board{
 
     }
 
-
+    getPlayingTeam(){
+        return this.playingTeam;
+    }
+    getNonPlayingTeam(){
+        return this.nonPlayingTeam;
+    }
+    setPlayingteam(){}
+    setNonPlayingTeam(){}
+    removeToken(){}
+    placeToken(){}
+    checkMill(){}
 
 
 }
