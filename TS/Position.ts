@@ -1,14 +1,14 @@
-import {Team} from './../Enums/Team';
-import {Direction} from './../Enums/Direction';
-import {Orientation} from './../Enums/Orientation';
+import { Player } from '../Enums/Player';
+import { Direction } from './../Enums/Direction';
+import { Orientation } from './../Enums/Orientation';
 
 /**
  * This class represents a position on the board
  * Includes both actual positions on the board and pet home positions
  */
-class Position {
+export class Position {
     // Initialise variables
-    private team: Team;
+    private player: Player;
     private isNode: boolean;
     private upNode?: Position;
     private downNode?: Position;
@@ -19,12 +19,12 @@ class Position {
 
     /**
      * Constructor for Position
-     * @param team Team that occupies this position
+     * @param player Player that occupies this position
      * @param isNode Whether this position is a home position
      * @param index Index of this position
      */
-    constructor(team: Team, isNode: boolean, index: number) {
-        this.team = team;
+    constructor(player: Player, isNode: boolean, index: number) {
+        this.player = player;
         this.isNode = isNode;
         this.index = index;
         this.millCounter = 0;
@@ -54,10 +54,10 @@ class Position {
 
     // Getters and setters
     /**
-     * @returns Team that occupies this position
+     * @returns Player that occupies this position
      */
-    public getTeam(): Team {
-        return this.team;
+    public getPlayer(): Player {
+        return this.player;
     }
 
     /**
@@ -98,19 +98,19 @@ class Position {
     }
 
     /**
-     * Places a team's token onto this position
+     * Places a player's token onto this position
      * There is no validation done here, validation must be done by whatever function calls this method
-     * @param team Team that occupies this position
+     * @param player Player that occupies this position
      */
-    public placeToken(team: Team) {
-        this.team = team;
+    public placeToken(player: Player) {
+        this.player = player;
     }
 
     /**
-     * Removes a team's token from this position
+     * Removes a player's token from this position
      */
     public removeToken() {
-        this.team = Team.None;
+        this.player = Player.None;
     }
 
     /**
@@ -156,11 +156,11 @@ class Position {
 
     /**
      * @param direction Direction to check for a neighbour
-     * @returns Number of consecutive neighbours that belong to the same team in the given direction
+     * @returns Number of consecutive neighbours that belong to the same player in the given direction
      */
     public checkDirection(direction: Direction): number {
         let neighbour = this.getNeighbour(direction);
-        if (neighbour && neighbour.getTeam() == this.getTeam()) {
+        if (neighbour && neighbour.getPlayer() == this.getPlayer()) {
             let counter = neighbour.checkDirection(direction);
             return counter += 1;
         }
