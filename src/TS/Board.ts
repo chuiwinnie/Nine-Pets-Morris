@@ -1,7 +1,6 @@
-import { Player } from '../Enums/Player';
-import { Orientation } from '../Enums/Orientation';
-import { Position } from './Position';
-import { Team } from './Team';
+import { Orientation } from './enums/Orientation.js';
+import { Position } from './Position.js';
+import { Team } from './Team.js';
 
 export class Board {
     teams: Team[]

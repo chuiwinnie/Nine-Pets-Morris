@@ -1,6 +1,6 @@
-import { Player } from '../Enums/Player';
-import { Direction } from '../Enums/Direction';
-import { Orientation } from '../Enums/Orientation';
+import { Player } from './enums/Player.js';
+import { Direction } from './enums/Direction.js';
+import { Orientation } from './enums/Orientation.js';
 
 /**
  * This class represents a position on the board
@@ -22,7 +22,7 @@ export class Position {
      * @param isNode Whether this position is a home position
      * @param index Index of this position
      */
-    constructor(player: Player, index: number) {
+    constructor(player: Player|undefined, index: number) {
         this.player = player;
         this.index = index;
         this.millCounter = 0;

@@ -1,5 +1,5 @@
-import { Action } from "./Action";
-import { Board } from "./../Board";
+import { Action } from "./Action.js";
+import { Board } from "./../Board.js";
 
 export class RemoveTokenAction extends Action {
     private removingOwnToken: boolean;
