@@ -1,5 +1,8 @@
 import { Board } from "./Board"
 import { Display } from "./Display";
+import {PlaceTokenAction} from "./Actions/PlaceTokenAction"
+import {RemoveTokenAction} from "./Actions/RemoveTokenAction"
+import {SwitchTurnAction} from "./Actions/SwitchTurnAction"
 
 /**
  * Game class to implement the game and allow the game to be played
@@ -29,7 +32,7 @@ export class Game {
             display.showBoard(gameIndex, this.currentBoard)
 
             // remove own token for move
-            let removeOwnTokenAction = RemoveTokenAction(true)
+            let removeOwnTokenAction = new RemoveTokenAction(true)
             let previousIndex = removeOwnTokenAction.perform()
 
             // select new position for selected/removed token
