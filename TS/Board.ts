@@ -1,35 +1,26 @@
+import { Player } from '../Enums/Player';
 import { Orientation } from './../Enums/Orientation';
 import { Position } from './Position';
 import { Team } from './Team';
 
-export class Board{
-    playingTeam: Team;
-    nonPlayingTeam: Team;
-    positions: Position[];
+export class Board {
+    teams: Team[]
+    currentPlayer: number
+    positions: Position[]
 
-    constructor(playingTeam: Team, nonPlayingTeam: Team, positions: Position[]){
-        this.playingTeam = playingTeam;
-        this.nonPlayingTeam = nonPlayingTeam;
-        this.positions = positions;
-
+    constructor(teams: Team[], currentPlayer: number, positions: Position[]){
+        this.teams = teams
+        this.currentPlayer = currentPlayer
+        this.positions = positions
     }
     /**
      * Getter method of playingteam
      * @returns playingTeam
      */
-    public getPlayingTeam(){
-        return this.playingTeam;
+    public getCurrentTeam(){
+        return this.teams[this.currentPlayer]
     }
 
-    public getNonPlayingTeam(){
-        return this.nonPlayingTeam;
-    }
-    public setPlayingteam(team: Team){
-        this.playingTeam = team;
-    }
-    public setNonPlayingTeam(team: Team){
-        this.nonPlayingTeam = team;
-    }
 
     /**
      * removeToken method responsible for removing a Token from the board
@@ -42,13 +33,13 @@ export class Board{
         //check if player moving a token from one place to a target position
         if (movingToken){
             //check if the token belongs to the player
-            if (team != this.playingTeam){
+            if (team != Player[this.currentPlayer]){
                 return false;
         }
         //if it is removing opponent's token
         else{
             //check if player select oponent's token
-            if (team != this.nonPlayingTeam){
+            if (team == this.playingTeam){
                 return false;
         }
         //check if the token form a mill before remove
@@ -60,6 +51,30 @@ export class Board{
         }
         return true;
     }
-    placeToken(){}
-    checkMill(){}
+    public placeToken(index: number){
+        let team = this.positions[index].getPlayer();
+        
+        if (team){
+
+        }
+    }
+
+    /**
+     * CheckMill method to check whether the position on the board form a mill
+     * @param index  position index to be checked
+     * @param addingMill boolean to determine whether is for adding a mill
+     * @returns boolean return true if mill formed otherwise return false
+     */
+    public checkMill(index:number, addingMill:boolean){
+        //check mill in the position
+        let millOrientation = this.positions[index].checkMill();
+        this.positions[index].updateMillCounterOrientation(millOrientation, addingMill)
+
+        if (millOrientation == Orientation.None){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
 }
