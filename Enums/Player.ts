@@ -1,4 +1,4 @@
 export enum Player {
-    Cat,
-    Dog,
+    Cat = 0,
+    Dog = 1,
 }
