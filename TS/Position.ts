@@ -8,7 +8,7 @@ import { Orientation } from './../Enums/Orientation';
  */
 export class Position {
     // Initialise variables
-    private player: Player;
+    private player?: Player;
     private isNode: boolean;
     private upNode?: Position;
     private downNode?: Position;
@@ -56,7 +56,7 @@ export class Position {
     /**
      * @returns Player that occupies this position
      */
-    public getPlayer(): Player {
+    public getPlayer(): Player | undefined{
         return this.player;
     }
 
@@ -110,7 +110,7 @@ export class Position {
      * Removes a player's token from this position
      */
     public removeToken() {
-        this.player = Player.None;
+        this.player = undefined;
     }
 
     /**
