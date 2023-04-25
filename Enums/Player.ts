@@ -1,4 +1,4 @@
-export enum Team {
+export enum Player {
     Cat,
     Dog,
     None
