@@ -2,7 +2,7 @@ import { Action } from "./Action";
 import { Board } from "./../Board";
 
 export class RemoveTokenAction extends Action {
-    removingOwnToken: boolean;
+    private removingOwnToken: boolean;
 
     constructor(board: Board, removingOwnToken: boolean) {
         super(board);

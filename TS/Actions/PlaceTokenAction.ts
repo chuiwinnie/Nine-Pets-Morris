@@ -2,7 +2,7 @@ import { Action } from "./Action";
 import { Board } from "./../Board";
 
 export class PlaceTokenAction extends Action {
-    previosPositionIndex: number;
+    private previosPositionIndex: number;
 
     constructor(board: Board, previousPositionIndex: number) {
         super(board);
