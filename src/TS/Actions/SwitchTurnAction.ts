@@ -1,7 +1,7 @@
 import { Action } from "./Action";
 import { Board } from "./../Board";
 
-export class PlaceTokenAction extends Action {
+export class SwitchTurnAction extends Action {
 
     constructor(board: Board) {
         super(board);
