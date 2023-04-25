@@ -1,8 +1,8 @@
-import { Board } from "./Board"
-import { Display } from "./Display";
-import {PlaceTokenAction} from "./Actions/PlaceTokenAction"
-import {RemoveTokenAction} from "./Actions/RemoveTokenAction"
-import {SwitchTurnAction} from "./Actions/SwitchTurnAction"
+import { Board } from "./Board.js"
+import { Display } from "./Display.js";
+import {PlaceTokenAction} from "./Actions/PlaceTokenAction.js"
+import {RemoveTokenAction} from "./Actions/RemoveTokenAction.js"
+import {SwitchTurnAction} from "./Actions/SwitchTurnAction.js"
 
 /**
  * Game class to implement the game and allow the game to be played
@@ -16,7 +16,6 @@ export class Game {
     constructor (boardHistory: Board[], currentBoard: Board){
         this.boardHistory = boardHistory;
         this.currentBoard = currentBoard;
-
     }
 
     /**
@@ -25,27 +24,28 @@ export class Game {
      * @param gameIndex number - gameIndex of the current game being played
      */
     public run(display: Display, gameIndex: number){
-        while (this.checkVictory(this.currentBoard)){
+        // while (this.checkVictory(this.currentBoard)){
             let end = this.boardHistory.length-1;
             // duplicate last board 
             this.currentBoard = this.boardHistory[end]
-            display.showBoard(gameIndex, this.currentBoard)
 
+            display.showBoard(gameIndex, this.currentBoard);
+            
             // remove own token for move
             let removeOwnTokenAction = new RemoveTokenAction(this.currentBoard, true)
             let previousIndex = removeOwnTokenAction.execute()
 
             // select new position for selected/removed token
-            let placeTokenAction = new PlaceTokenAction(this.currentBoard, previousIndex)
-            let newIndex = placeTokenAction.execute()
+            // let placeTokenAction = new PlaceTokenAction(this.currentBoard, previousIndex)
+            // let newIndex = placeTokenAction.execute()
             
             display.showBoard(gameIndex, this.currentBoard)
 
             // remove opponent's token if mill formed
-            if (this.currentBoard.checkMill(newIndex, true)){
-                let removeOpponentTokenAction = new RemoveTokenAction(this.currentBoard, false)
-                removeOpponentTokenAction.execute()
-            }
+            // if (this.currentBoard.checkMill(newIndex, true)){
+            //     let removeOpponentTokenAction = new RemoveTokenAction(this.currentBoard, false)
+            //     removeOpponentTokenAction.execute()
+            // }
 
             // switch turns
             let switchTurnAction = new SwitchTurnAction(this.currentBoard)
@@ -53,7 +53,7 @@ export class Game {
             
             this.boardHistory.push(this.currentBoard)
 
-        }
+        // }
     }
 
     /**
