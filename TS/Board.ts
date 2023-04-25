@@ -7,7 +7,7 @@ export class Board{
     nonPlayingTeam: Team;
     positions: Position[];
 
-    constructor(playingTeam: Team, nonPlayingTeam:Team, positions: Position[]){
+    constructor(playingTeam: Team, nonPlayingTeam: Team, positions: Position[]){
         this.playingTeam = playingTeam;
         this.nonPlayingTeam = nonPlayingTeam;
         this.positions = positions;
@@ -62,6 +62,4 @@ export class Board{
     }
     placeToken(){}
     checkMill(){}
-
-
 }
