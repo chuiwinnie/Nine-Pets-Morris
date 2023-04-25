@@ -26,4 +26,8 @@ export class Team {
     public removeToken(): void {
         this.numaliveTokens--;
     }
+
+    public getPlayer(): Player{
+        return this.player;
+    }
 }
