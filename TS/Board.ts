@@ -33,13 +33,13 @@ export class Board {
         //check if player moving a token from one place to a target position
         if (movingToken){
             //check if the token belongs to the player
-            if ((team) && (team != this.currentPlayer)){
+            if ((team == undefined) || (team != this.getCurrentTeam().getPlayer())){
                 return false
             }
         //if it is removing opponent's token
         } else {
             //check if player select oponent's token
-            if (team == this.currentPlayer){
+            if (team == this.getCurrentTeam().getPlayer()){
                 return false
             }
         }
@@ -63,7 +63,18 @@ export class Board {
             this.positions[index].placeToken(currentTeam.getPlayer())
         }
     }
-
+    public switchPlayingTeam(){
+        switch (this.currentPlayer) {
+            case 0:
+                this.currentPlayer = 1;
+                break;
+            case 1:
+                this.currentPlayer = 0;
+                break;
+            default:
+                break;
+        }
+    }
     /**
      * CheckMill method to check whether the position on the board form a mill
      * @param index  position index to be checked
