@@ -9,7 +9,6 @@ import { Orientation } from './../Enums/Orientation';
 export class Position {
     // Initialise variables
     private player?: Player;
-    private isNode: boolean;
     private upNode?: Position;
     private downNode?: Position;
     private leftNode?: Position;
@@ -23,9 +22,8 @@ export class Position {
      * @param isNode Whether this position is a home position
      * @param index Index of this position
      */
-    constructor(player: Player, isNode: boolean, index: number) {
+    constructor(player: Player, index: number) {
         this.player = player;
-        this.isNode = isNode;
         this.index = index;
         this.millCounter = 0;
     }
@@ -74,13 +72,6 @@ export class Position {
             case Direction.Right:
                 return this.rightNode;
         }
-    }
- 
-    /**
-     * @returns Whether this position is a home position
-     */
-    public getIsNode(): boolean {
-        return this.isNode;
     }
 
     /**
