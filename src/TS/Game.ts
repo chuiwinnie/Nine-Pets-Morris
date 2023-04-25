@@ -9,8 +9,8 @@ import {SwitchTurnAction} from "./Actions/SwitchTurnAction"
  */
 export class Game {
     //attriute
-    boardHistory: Board[]
-    currentBoard: Board
+    boardHistory: Board[];
+    currentBoard: Board;
 
     //Constructor
     constructor (boardHistory: Board[], currentBoard: Board){
@@ -28,28 +28,28 @@ export class Game {
         while (this.checkVictory(this.currentBoard)){
             let end = this.boardHistory.length-1;
             // duplicate last board 
-            this.currentBoard = this.boardHistory[end] 
+            this.currentBoard = this.boardHistory[end]
             display.showBoard(gameIndex, this.currentBoard)
 
             // remove own token for move
-            let removeOwnTokenAction = new RemoveTokenAction(true)
-            let previousIndex = removeOwnTokenAction.perform()
+            let removeOwnTokenAction = new RemoveTokenAction(this.currentBoard, true)
+            let previousIndex = removeOwnTokenAction.execute()
 
             // select new position for selected/removed token
             let placeTokenAction = new PlaceTokenAction(this.currentBoard, previousIndex)
-            let newIndex = placeTokenAction.perform()
+            let newIndex = placeTokenAction.execute()
             
             display.showBoard(gameIndex, this.currentBoard)
 
             // remove opponent's token if mill formed
             if (this.currentBoard.checkMill(newIndex, true)){
-                let removeOpponentTokenAction = new RemoveTokenAction(false)
-                removeOpponentTokenAction.perform()
+                let removeOpponentTokenAction = new RemoveTokenAction(this.currentBoard, false)
+                removeOpponentTokenAction.execute()
             }
 
             // switch turns
             let switchTurnAction = new SwitchTurnAction(this.currentBoard)
-            switchTurnAction.perform()
+            switchTurnAction.execute()
             
             this.boardHistory.push(this.currentBoard)
 
