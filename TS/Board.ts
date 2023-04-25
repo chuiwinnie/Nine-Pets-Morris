@@ -1,9 +1,12 @@
+import { Player } from "./../Enums/Player";
+import { Position } from "./Position";
+
 export class Board{
-    playingTeam: Team;
-    nonPlayingTeam: Team;
+    playingTeam: Player;
+    nonPlayingTeam: Player;
     positions: Position[];
 
-    constructor(playingTeam: Team, nonPlayingTeam:TemplateStringsArray, positions: Position[]){
+    constructor(playingTeam: Player, nonPlayingTeam: Player, positions: Position[]){
         this.playingTeam = playingTeam;
         this.nonPlayingTeam = nonPlayingTeam;
         this.positions = positions;
