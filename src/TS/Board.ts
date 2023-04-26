@@ -3,13 +3,38 @@ import { Position } from './Position.js';
 import { Team } from './Team.js';
 import { Player } from './enums/Player.js';
 
+/**
+ * Class representing the game board.
+ */
 export class Board {
-    teams: Team[]
-    currentPlayer: number
-    positions: Position[]
-    gamePhase: number
-    pickUpPosition?: number
+    /**
+     * The list of teams in the game.
+     */
 
+    teams: Team[]
+    /**
+     * The current player index.
+     */
+    currentPlayer: number
+    /**
+     * The list of positions on the board.
+     */
+    positions: Position[]
+    /**
+     * The current phase of the game.
+     */
+    gamePhase: number
+    /**
+     * The position where the last token was picked up.
+     */
+    pickUpPosition?: number
+    /**
+     * Creates a new board.
+     * @param teams - The teams in the game.
+     * @param currentPlayer - The current player index.
+     * @param positions - The positions on the board.
+     * @param gamePhase - The current phase of the game.
+     */
     constructor(teams: Team[], currentPlayer: number, positions: Position[], gamePhase: number){
         this.teams = teams
         this.currentPlayer = currentPlayer
@@ -23,19 +48,33 @@ export class Board {
     public getPlayingTeam(){
         return this.teams[this.currentPlayer]
     }
-
+    /**
+     * Returns the non-playing team.
+     * @returns The non-playing team.
+     */
     public getNonPlayingTeam(){
         return this.teams[(this.currentPlayer+1)%2]
     }
-
+    /**
+     * Returns the team at the specified index.
+     * @param index - The index of the team to retrieve.
+     * @returns The team at the specified index.
+     */
     public getTeam(index: number) {
         return this.teams[index]
     }
-
+    /**
+     * Returns the player at the specified position index.
+     * @param index - The position index.
+     * @returns The player at the specified position index.
+     */
     public getPositionTeam(index: number): Player | undefined {
         return this.positions[index].getPlayer()
     }
-
+    /**
+     * Performs an action on the board.
+     * @param index - The index of the position to perform the action on.
+     */
     public action(index: number) {
         switch(this.gamePhase) {
             case 0:
@@ -98,7 +137,11 @@ export class Board {
         }
         return true;
     }
-    
+    /**
+    *Place a token on the board in the specified position.
+    *@param index The index of the position where the token should be placed.
+    *@returns A boolean indicating whether the token placement was successful.
+    */
     public placeToken(index: number){
         let team = this.positions[index].getPlayer()
         let currentTeam = this.getPlayingTeam()
@@ -111,7 +154,9 @@ export class Board {
             return false
         }
     }
-
+    /**
+    * Switch the current playing team and update the game phase accordingly.
+    */
     public switchPlayingTeam(){
         this.currentPlayer = (this.currentPlayer + 1) % 2
         if (this.getPlayingTeam().getNumUnplacedTokens() > 0){
