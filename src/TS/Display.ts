@@ -95,19 +95,19 @@ export class Display {
      * Shows the list of all previous games.
      * @param gameList The list of games to display.
      */
-    public showGameList(gameList: Game[]): void { }
+    showGameList(gameList: Game[]): void { }
 
     /**
      * Shows the game board.
      * @param board The game board to display.
      */
-    public showBoard(board: Board): void {
+    showBoard(board: Board): void {
         const context = this.setUpCanvas();
         this.drawNodes(context);
         this.drawHorizontalLines(context);
         this.drawVerticalLines(context);
-        this.displayGameInfo(board)
-        this.detectNodeClick()
+        this.displayGameInfo(board);
+        this.detectNodeClick();
 
         // add tokens at the correct positions
         for (let i = 0; i < Display.NODES.length; i++) {
@@ -267,8 +267,8 @@ export class Display {
                 const node = Display.NODES[i];
                 getArc(context, node[0], node[1], Display.NODE_RADIUS * 2);
                 if (context.isPointInPath(x, y)) {
-                    // trigger an action on the display and position index
-                    Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false)
+                    // trigger an action on the current game
+                    Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false);
                 }
             }
         }
@@ -316,7 +316,7 @@ export class Display {
      * Updates the UI to display the victory of the specific player.
      * @param player The winning player.
      */
-    public showVictory(player: Player): void {
+    showVictory(player: Player): void {
         document.getElementById("currentTurn").innerHTML = `${Player[player]} Wins!`;
     }
 }
