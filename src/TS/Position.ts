@@ -93,8 +93,15 @@ export class Position {
      * There is no validation done here, validation must be done by whatever function calls this method
      * @param player Player that occupies this position
      */
-    public placeToken(player: Player) {
-        this.player = player;
+    public placeToken(player: number) {
+        switch (player) {
+            case 0:
+                this.player = Player.Cat;
+                break;
+            case 1:
+                this.player = Player.Dog;
+                break;
+        }
     }
 
     /**

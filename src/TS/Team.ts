@@ -7,8 +7,8 @@ export class Team {
 
     constructor(player: Player) {
         this.player = player;
-        this.numUnplacedTokens = 9;
-        this.numaliveTokens = 9;
+        this.numUnplacedTokens = 1;
+        this.numaliveTokens = 1;
     }
 
     public getNumUnplacedTokens(): number {

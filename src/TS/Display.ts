@@ -1,6 +1,10 @@
 import { Game } from "./Game.js";
 import { Board } from "./Board.js";
 import { Team } from "./Team.js";
+import { Application } from "./Application.js";
+import { Player } from "./enums/Player.js";
+
+const canvas = <HTMLCanvasElement>document.getElementById('canvas');
 
 const CANVAS_WIDTH = window.innerWidth * 0.8;
 const CANVAS_HEIGHT = window.innerHeight * 0.8;
@@ -48,6 +52,48 @@ const NODES = [
     NODE_19, NODE_20, NODE_21, NODE_22, NODE_23, NODE_24
 ];
 
+canvas.onclick = function (e) {
+    var rect = canvas.getBoundingClientRect(),  // get absolute position of canvas
+        x = e.clientX - rect.left,              // adjust mouse-position
+        y = e.clientY - rect.top;
+
+    const context = canvas.getContext('2d');
+    if (context == null) return;
+
+    for (let i = 0; i < NODES.length; i++) {
+        const node = NODES[i];
+        getArc(context, node[0], node[1], NODE_RADIUS);
+        if (context.isPointInPath(x, y)) {
+            Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false)
+        }
+    }
+};
+
+function getArc(context: CanvasRenderingContext2D, x: number, y: number, r: number) {
+    context.beginPath();
+    context.arc(x, y, r, 0, Math.PI * 2);
+    context.closePath();
+}
+
+function addTokenImage(context: CanvasRenderingContext2D, x: number, y: number, player: Player) {
+    const image = new Image();
+    switch (player) {
+        case (0):
+            image.src = "./assets/cat.png";
+            break;
+        case (1):
+            image.src = "./assets/dog.png";
+            break;
+        default:
+            break;
+    }
+
+    image.onload = function () {
+        context.drawImage(image, x - TOKEN_SIZE * 0.5, y - TOKEN_SIZE * 0.5, TOKEN_SIZE, TOKEN_SIZE);
+    }
+}
+
+
 export class Display {
     private static displayInstance: Display;
 
@@ -60,23 +106,23 @@ export class Display {
         return Display.displayInstance;
     }
 
-    public showMainMeu() { }
+    public showMainMenu() { }
 
     public showGameList(gameList: Game[]) { }
 
-    public showBoard(gameIndex: number, board: Board) {
+    /*
+    public showBoard(board: Board) {
         this.drawBoard();
     }
+    */
 
-    private drawBoard() {
-        const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+    public showBoard(board: Board) {
         if (!canvas) {
             return;
         }
 
         const context = canvas.getContext('2d');
         if (!context) {
-            console.log("ctx");
             return;
         }
 
@@ -90,7 +136,7 @@ export class Display {
         context.lineWidth = 3;
 
         // draw all nodes
-        this.drawNodes(context);
+        this.drawNodes(context, board);
 
         // draw all horizontal lines
         this.drawHorizontalLines(context);
@@ -99,13 +145,24 @@ export class Display {
         this.drawVerticalLines(context);
     }
 
-    private drawNodes(context: CanvasRenderingContext2D) {
+    private drawNodes(context: CanvasRenderingContext2D, board: Board) {
         for (let i = 0; i < NODES.length; i++) {
             const node = NODES[i];
             context.beginPath();
             context.arc(node[0], node[1], NODE_RADIUS, 0, 2 * Math.PI, false);
             context.fill();
             context.stroke();
+            switch(board.getPositionTeam(i)) {
+                case 0:
+                    addTokenImage(context, node[0], node[1], Player.Cat);
+                    break;
+                case 1:
+                    addTokenImage(context, node[0], node[1], Player.Dog);
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 

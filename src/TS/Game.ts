@@ -12,6 +12,7 @@ export class Game {
     boardHistory: Board[];
     currentBoard: Board;
 
+
     //Constructor
     constructor (boardHistory: Board[], currentBoard: Board){
         this.boardHistory = boardHistory;
@@ -24,36 +25,19 @@ export class Game {
      * @param gameIndex number - gameIndex of the current game being played
      */
     public run(display: Display, gameIndex: number){
-        // while (this.checkVictory(this.currentBoard)){
-            let end = this.boardHistory.length-1;
-            // duplicate last board 
-            this.currentBoard = this.boardHistory[end]
+            display.showBoard(this.currentBoard);
+    }
 
-            display.showBoard(gameIndex, this.currentBoard);
-            
-            // remove own token for move
-            let removeOwnTokenAction = new RemoveTokenAction(this.currentBoard, true)
-            let previousIndex = removeOwnTokenAction.execute()
 
-            // select new position for selected/removed token
-            // let placeTokenAction = new PlaceTokenAction(this.currentBoard, previousIndex)
-            // let newIndex = placeTokenAction.execute()
-            
-            display.showBoard(gameIndex, this.currentBoard)
-
-            // remove opponent's token if mill formed
-            // if (this.currentBoard.checkMill(newIndex, true)){
-            //     let removeOpponentTokenAction = new RemoveTokenAction(this.currentBoard, false)
-            //     removeOpponentTokenAction.execute()
-            // }
-
-            // switch turns
-            let switchTurnAction = new SwitchTurnAction(this.currentBoard)
-            switchTurnAction.execute()
-            
+    public action(display: Display, index: number, isUndoing: boolean) {
+        if (isUndoing) {
+            this.undo(display)
+        } else {
+            this.currentBoard.action(index)
             this.boardHistory.push(this.currentBoard)
-
-        // }
+        }
+        display.showBoard(this.currentBoard)
+        console.log(this.currentBoard)
     }
 
     /**
@@ -75,8 +59,9 @@ export class Game {
      * @param display - The display object used to update the game board.
      * @param gameIndex - The index of the current game being played.
      */
-    public undo(display: Display, gameIndex: number){
+    public undo(display: Display){
         this.boardHistory.pop()
-        this.run(display, gameIndex)
+        this.currentBoard = this.boardHistory[this.boardHistory.length-1]
+        display.showBoard(this.currentBoard)
     }
 }
