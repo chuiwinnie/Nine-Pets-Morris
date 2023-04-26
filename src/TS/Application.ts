@@ -71,7 +71,6 @@ export class Application {
         for (let i = 0; i < 24; i++) {
             emptyBoard.push(new Position(undefined, i));
         }
-
         emptyBoard[0].setNode(Direction.Right, emptyBoard[1]);
         emptyBoard[0].setNode(Direction.Down, emptyBoard[9]);
 
@@ -168,7 +167,11 @@ export class Application {
         const newGameIndex = this.gameList.length - 1;
         this.loadGame(newGameIndex);
     }
+    /**
 
+    Loads the game specified by gameIndex from the gameList and runs it with the given display.
+    @param gameIndex - The index of the game to be loaded from the gameList.
+    */
     private loadGame(gameIndex: number) { 
         this.currentGame = this.gameList[gameIndex];
         this.currentGame.run(this.display, gameIndex);
