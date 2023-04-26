@@ -1,4 +1,3 @@
-import { Orientation } from './enums/Orientation.js';
 import { Position } from './Position.js';
 import { Team } from './Team.js';
 import { Player } from './enums/Player.js';
@@ -47,40 +46,6 @@ export class Board {
         this.currentPlayer = currentPlayer ?? Player.Cat;
         this.positions = positions ?? this.setUpPositions();
         this.gamePhase = gamePhase ?? 1;
-    }
-
-    /**
-     * Gets the team that is playing this current turn.
-     * @returns The currently playing team.
-     */
-    getPlayingTeam(): Team {
-        return this.teams[this.currentPlayer];
-    }
-
-    /**
-     * Gets the team that is not playing this current turn..
-     * @returns The non-playing team.
-     */
-    getNonPlayingTeam(): Team {
-        return this.teams[(this.currentPlayer + 1) % 2];
-    }
-
-    /**
-     * Gets the team at the specified index in teams.
-     * @param index The index of the team to retrieve.
-     * @returns The team at the specified index.
-     */
-    getTeam(index: number): Team {
-        return this.teams[index];
-    }
-
-    /**
-     * Gets the player at the specified position index.
-     * @param index The position index.
-     * @returns The player at the specified position index, or undefined if no player is at the position.
-     */
-    getPositionTeam(index: number): Player | undefined {
-        return this.positions[index].getPlayer();
     }
 
     /**
@@ -185,94 +150,76 @@ export class Board {
     }
 
     /**
-     * Performs an action on the board.
-     * @param index The index of the position to perform the action on.
+     * Gets the team that is playing this current turn.
+     * @returns The currently playing team.
      */
-    action(index: number) {
-        switch (this.gamePhase) {
-            case 0:
-                if (this.removeToken(index, true)) {
-                    this.gamePhase++;
-                    this.pickUpPosition = index;
-                }
-                break;
-            case 1:
-                if (index != this.pickUpPosition) {
-                    if (this.placeToken(index)) {
-                        if (this.checkMill(index, true)) {
-                            this.gamePhase++;
-                        } else {
-                            this.switchPlayingTeam();
-                        }
-                    }
-                }
-                break;
-            case 2:
-                if (this.removeToken(index, false)) {
-                    this.switchPlayingTeam();
-                }
-                break;
-            default:
-                break;
-        }
+    getPlayingTeam(): Team {
+        return this.teams[this.currentPlayer];
     }
 
     /**
-     * Removes the token at the specified position index from the board.
-     * @param index The position index of token to be removed.
-     * @param movingToken Indicates whether the token removal is part of moving the palyer's own token or removing oponent's token.
-     * @returns true if the token removal was successful, false otherwise.
+     * Gets the team that is not playing this current turn..
+     * @returns The non-playing team.
      */
-    removeToken(index: number, movingToken: boolean): boolean {
-        let positionPlayer = this.positions[index].getPlayer();
-
-        // check if player is moving their own token from the specified position to another
-        if (movingToken) {
-            // check if the token belongs to the player
-            if (positionPlayer != this.getPlayingTeam().getPlayer()) {
-                return false;
-            }
-        } else {
-            //check if the token belongs to the opponent
-            if (positionPlayer != this.getNonPlayingTeam().getPlayer()) {
-                return false;
-            }
-        }
-
-        // check if the specified token is a part of a mill before it is removed
-        let orientation = this.positions[index].checkMill();
-        if (orientation != Orientation.None) {
-            // update the mill counter of other tokens that were in the same mill
-            this.positions[index].updateMillCounterOrientation(orientation, false);
-        }
-
-        this.positions[index].removeToken();
-
-        // decrement the opponent's number of alive tokens if one is removed
-        if (!movingToken) {
-            this.getNonPlayingTeam().removeToken();
-        }
-
-        return true;
+    getNonPlayingTeam(): Team {
+        return this.teams[(this.currentPlayer + 1) % 2];
     }
 
     /**
-     * Places a token on the board at the specified position index.
-     * @param index The index of the position to place the token.
-     * @returns true if the token placement was successful, false otherwise.
-    */
-    placeToken(index: number): boolean {
-        let positionPlayer = this.positions[index].getPlayer();
+     * Gets the team at the specified index in teams.
+     * @param index The index of the team to retrieve.
+     * @returns The team at the specified index.
+     */
+    getTeam(index: number): Team {
+        return this.teams[index];
+    }
 
-        // check if the position is unoccupied
-        if (positionPlayer == undefined) {
-            this.positions[index].placeToken(this.currentPlayer);
-            this.getPlayingTeam().placeToken();
-            return true;
-        }
-        else {
-            return false;
-        }
+    /**
+     * Gets the player at the specified position index.
+     * @param index The position index.
+     * @returns The player at the specified position index, or undefined if no player is at the position.
+     */
+    getPositionTeam(index: number): Player {
+        return this.positions[index].getPlayer();
+    }
+
+    /**
+     * Gets the positions array.
+     * @returns The positions array of this board.
+     */
+    getPositions(): Position[] {
+        return this.positions;
+    }
+
+    /**
+     * Gets the current game phase.
+     * @returns The game phase of this board.
+     */
+    getGamePhase(): number {
+        return this.gamePhase;
+    }
+
+    /**
+     * Gets the position index of where the last token was picked up.
+     * @returns The position where the last token was picked up.
+     */
+    getPickUpPosition(): number {
+        return this.pickUpPosition;
+    }
+
+    /**
+     * Increments the game phase by 1.
+     */
+    incrementGamePhase(): void {
+        this.gamePhase++;
+    }
+
+    /**
+     * Sets the last pick up position of the board.
+     * @param index The position index where the last token was picked up.
+     */
+    setPickUpPosition(index: number): void {
+        this.pickUpPosition = index;
     }
 
     /**
@@ -299,6 +246,6 @@ export class Board {
     checkMill(index: number, tokenAdded: boolean): boolean {
         let millOrientation = this.positions[index].checkMill();
         this.positions[index].updateMillCounterOrientation(millOrientation, tokenAdded);
-        return (millOrientation != Orientation.None);
+        return (millOrientation != undefined);
     }
 }

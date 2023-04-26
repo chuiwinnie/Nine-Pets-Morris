@@ -2,7 +2,6 @@ import { Board } from "./Board.js"
 import { Display } from "./Display.js";
 import { PlaceTokenAction } from "./Actions/PlaceTokenAction.js"
 import { RemoveTokenAction } from "./Actions/RemoveTokenAction.js"
-import { SwitchTurnAction } from "./Actions/SwitchTurnAction.js"
 
 
 /**
@@ -33,7 +32,7 @@ export class Game {
      * Runs the game and updates the display continuosly until a victory condition is met.
      * @param display The Display object used to show the game.
      */
-    run(display: Display) {        
+    run(display: Display): void {        
         display.showBoard(this.currentBoard);
     }
 
@@ -43,11 +42,11 @@ export class Game {
      * @param index The position index to execute the action on.
      * @param isUndoing Indicates whether this is an undoing action.
      */
-    action(display: Display, index: number, isUndoing: boolean) {
+    action(display: Display, index: number, isUndoing: boolean): void {
         if (isUndoing) {
             this.undo(display);
         } else {
-            this.currentBoard.action(index);
+            this.performAction(index);
             this.boardHistory.push(this.currentBoard);
         }
 
@@ -59,16 +58,37 @@ export class Game {
     }
 
     /**
-     * Checks if a victory condition of the game has been met.
-     * @param currentBoard The board representing the current game state/turn.
-     * @returns true if a victory condition has been met, false otherwise.
+     * Performs the correct action at the specified index based on the game phase.
+     * @param index The position index to perform the action on.
      */
-    checkVictory(currentBoard: Board) {
-        let currentTeam = currentBoard.getPlayingTeam();
-        if (currentTeam.getNumAliveTokens() < 3) {
-            return true;
+    private performAction(index: number): void {
+        let updatedBoard: Board;
+        switch (this.currentBoard.getGamePhase()) {
+            case 0:
+                let moveTokenAction = new RemoveTokenAction(this.currentBoard, index, true);
+                updatedBoard = moveTokenAction.execute();
+                if (updatedBoard) {
+                    this.currentBoard = updatedBoard;
+                }
+                break;
+            case 1:
+                if (index != this.currentBoard.getPickUpPosition()) {
+                    let placeTokenAction = new PlaceTokenAction(this.currentBoard, index);
+                    updatedBoard = placeTokenAction.execute();
+                    this.currentBoard = updatedBoard;
+                }
+                break;
+            case 2:
+                let removeTokenAction = new RemoveTokenAction(this.currentBoard, index, false);
+                updatedBoard = removeTokenAction.execute();
+                if (updatedBoard) {
+                    this.currentBoard = updatedBoard;
+                    this.currentBoard.switchPlayingTeam();
+                }
+                break;
+            default:
+                break;
         }
-        return false;
     }
 
     /**
@@ -76,9 +96,22 @@ export class Game {
      * @param display The Display object used to show the game board.
      * @param gameIndex The index of the currently playing game.
      */
-    undo(display: Display) {
+    undo(display: Display): void {
         this.boardHistory.pop();
         this.currentBoard = this.boardHistory[this.boardHistory.length - 1];
         display.showBoard(this.currentBoard);
+    }
+
+    /**
+     * Checks if a victory condition of the game has been met.
+     * @param currentBoard The board representing the current game state/turn.
+     * @returns true if a victory condition has been met, false otherwise.
+     */
+    checkVictory(currentBoard: Board): boolean {
+        let currentTeam = currentBoard.getPlayingTeam();
+        if (currentTeam.getNumAliveTokens() < 3) {
+            return true;
+        }
+        return false;
     }
 }
