@@ -50,22 +50,47 @@ const NODES = [
     NODE_19, NODE_20, NODE_21, NODE_22, NODE_23, NODE_24
 ];
 
+/**
+ * Represents the game display.
+ */
 export class Display {
+    /**
+     * The instance of the display.
+     */
     private static displayInstance: Display;
-
+     /**
+     * Creates a new instance of the display.
+     * 
+     * Note: This constructor is private to enforce the Singleton pattern.
+     */
     private constructor() { }
-
+    /**
+     * Gets the instance of the display.
+     * 
+     * @returns The instance of the display.
+     */
     public static getInstance() {
         if (Display.displayInstance == null) {
             Display.displayInstance = new Display();
         }
         return Display.displayInstance;
     }
-
+    /**
+     * Shows the main menu.
+     */
     public showMainMenu() { }
-
+    /**
+     * Shows the list of games.
+     * 
+     * @param gameList The list of games to display.
+     */
     public showGameList(gameList: Game[]) { }
 
+    /**
+     * Shows the game board.
+     * 
+     * @param board The game board to display.
+     */
     public showBoard(board: Board) {
         // set up canvas and get its context
         const context = this.setUpCanvas();
@@ -85,7 +110,11 @@ export class Display {
         // detect which node has been clicked by user
         this.detectNodeClick()
     }
-
+    /**
+     * Sets up the canvas.
+     * 
+     * @returns The canvas context.
+     */
     private setUpCanvas() {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
         if (!canvas) {
@@ -108,7 +137,12 @@ export class Display {
 
         return context;
     }
-
+    /**
+     * Draws all nodes on the canvas.
+     * 
+     * @param context The canvas context.
+     * @param board The game board.
+     */
     private drawNodes(context: CanvasRenderingContext2D, board: Board) {
         for (let i = 0; i < NODES.length; i++) {
             const node = NODES[i];
@@ -129,7 +163,11 @@ export class Display {
             }
         }
     }
-
+    /**
+     * Draws all horizontal lines on the canvas.
+     * 
+     * @param context The canvas context.
+     */
     private drawHorizontalLines(context: CanvasRenderingContext2D) {
         for (let i = 0; i < NODES.length - 1; i++) {
             const startNode = NODES[i];
@@ -145,7 +183,10 @@ export class Display {
             }
         }
     }
-
+   /**
+   * Renders the vertical lines of the game board.
+   * @param context - The canvas rendering context to use.
+   */
     private drawVerticalLines(context: CanvasRenderingContext2D) {
         context.beginPath();
         context.moveTo(NODE_1[0], NODE_1[1]);
@@ -192,7 +233,12 @@ export class Display {
         context.lineTo(NODE_23[0], NODE_23[1]);
         context.stroke();
     }
+    /**
 
+    Displays the current game information on the user interface.
+
+    @param board - The current game board object.
+    */
     private displayInformation(board: Board) {
         let catTeam = board.getTeam(Player.Cat);
         let catAliveTokenCount = catTeam.getNumAliveTokens()
@@ -201,41 +247,65 @@ export class Display {
         let dogTeam = board.getTeam(Player.Dog);
         let dogAliveTokenCount = dogTeam.getNumAliveTokens()
         let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens()
-
+        // Update the HTML elements with the game information.
         document.getElementById("currentTurn").innerHTML = `Current Turn: ${Player[board.getPlayingTeam().getPlayer()]}`;
         document.getElementById("catAliveTokens").innerHTML = `Alive Tokens: ${catAliveTokenCount}`;
         document.getElementById("catUnplacedTokens").innerHTML = `Unplaced Tokens: ${catUnplacedTokenCount}`;
         document.getElementById("dogAliveTokens").innerHTML = `Alive Tokens: ${dogAliveTokenCount}`;
         document.getElementById("dogUnplacedTokens").innerHTML = `Unplaced Tokens: ${dogUnplacedTokenCount}`;
     }
+    /**
 
+    Detects when a node is clicked on a canvas element and triggers an action.
+    */
     private detectNodeClick() {
+        // Get canvas element by id
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
-
+        // Set onclick function for canvas element
         canvas.onclick = function (e) {
+            // Get absolute position of canvas
             var rect = canvas.getBoundingClientRect(),  // get absolute position of canvas
                 x = e.clientX - rect.left,              // adjust mouse-position
                 y = e.clientY - rect.top;
-        
+             // Get context of canvas element
             const context = canvas.getContext('2d');
             if (context == null) return;
-        
+            // Iterate through nodes and check if clicked point is within a node
             for (let i = 0; i < NODES.length; i++) {
                 const node = NODES[i];
                 getArc(context, node[0], node[1], NODE_RADIUS);
                 if (context.isPointInPath(x, y)) {
+                    // Trigger action with Display instance and node index
                     Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false)
                 }
             }
         };
+        /**
 
+        Draws an arc on the canvas context at the given x and y coordinates with the specified radius.
+        @param context - The canvas 2D rendering context to draw the arc on.
+        @param x - The x-coordinate of the center of the arc.
+        @param y - The y-coordinate of the center of the arc.
+        @param r - The radius of the arc.
+        */
         function getArc(context: CanvasRenderingContext2D, x: number, y: number, r: number) {
             context.beginPath();
             context.arc(x, y, r, 0, Math.PI * 2);
             context.closePath();
         }
     }
+    /**
 
+    Adds a token image to the specified canvas context at the given (x, y) position for the given player.
+
+    @param context - The canvas rendering context to draw the image onto.
+
+    @param x - The x-coordinate of the center of the token image.
+
+    @param y - The y-coordinate of the center of the token image.
+
+    @param player - The player whose token image should be drawn.
+    */
     private addTokenImage(context: CanvasRenderingContext2D, x: number, y: number, player: Player) {
         const image = new Image();
         switch (player) {
@@ -253,7 +323,11 @@ export class Display {
             context.drawImage(image, x - TOKEN_SIZE * 0.5, y - TOKEN_SIZE * 0.5, TOKEN_SIZE, TOKEN_SIZE);
         }
     }
+    /**
 
+    Updates the UI to display the victory of a specific team.
+    @param team - The winning team.
+    */
     public showVictory(team: Player) {
         document.getElementById("currentTurn").innerHTML = `${Player[team]} Wins!`;
         console.log(Player[team] + " wins!");
