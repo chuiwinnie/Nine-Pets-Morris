@@ -28,7 +28,14 @@ export class Game {
         display.showBoard(this.currentBoard);
     }
 
+    /**
 
+    Executes an action on the game board, adds the resulting board to the board history,
+    and checks for victory conditions. If undoing, the previous board state is restored.
+    @param display - the Display object used to show the board and victory message
+    @param index - the index of the action to execute on the board
+    @param isUndoing - true if undoing the previous action, false otherwise
+    */
     public action(display: Display, index: number, isUndoing: boolean) {
         if (isUndoing) {
             this.undo(display)
