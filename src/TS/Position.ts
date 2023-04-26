@@ -2,38 +2,63 @@ import { Player } from './enums/Player.js';
 import { Direction } from './enums/Direction.js';
 import { Orientation } from './enums/Orientation.js';
 
+
 /**
- * This class represents a position on the board
- * Includes both actual positions on the board and pet home positions
+ * This class represents a position on the board.
  */
 export class Position {
-    // Initialise variables
+    /**
+     * The player that occupies this position.
+     */
     private player?: Player;
+
+    /**
+     * The neighbour position above this position.
+     */
     private upNode?: Position;
+
+    /**
+     * The neighbour position below this position.
+     */
     private downNode?: Position;
+
+    /**
+     * The neighbour position to the left of this position.
+     */
     private leftNode?: Position;
+
+    /**
+     * The neighbour position to the right of this position.
+     */
     private rightNode?: Position;
+
+    /**
+     * The index of this position, ranges from 0-23 inclusive.
+     */
     private index: number;
+
+    /**
+     * The number of mills that this position is part of.
+     */
     private millCounter: number;
 
     /**
-     * Constructor for Position
-     * @param player Player that occupies this position
-     * @param isNode Whether this position is a home position
-     * @param index Index of this position
+     * Constructs a position.
+     * @param player The player that occupies this position.
+     * @param index The index of this position.
      */
-    constructor(player: Player|undefined, index: number) {
+    constructor(player: Player | undefined, index: number) {
         this.player = player;
         this.index = index;
         this.millCounter = 0;
     }
 
     /**
-     * Set a neighbouring position, depending on the direction
-     * @param direction Direction of the neighbour
-     * @param neighbour Neighbouring position
+     * Sets the neighbour position at the specified direction.
+     * @param direction The direction of the neighbour position.
+     * @param neighbour The neighbour position.
      */
-    public setNode(direction: Direction, neighbour: Position) {
+    public setNeighbour(direction: Direction, neighbour: Position): void {
         switch (direction) {
             case Direction.Up:
                 this.upNode = neighbour;
@@ -50,16 +75,17 @@ export class Position {
         }
     }
 
-    // Getters and setters
     /**
-     * @returns Player that occupies this position
+     * Gets the player that occupies this position.
+     * @returns The player that occupies this position, or undefined if position not occupied.
      */
-    public getPlayer(): Player | undefined{
+    public getPlayer(): Player | undefined {
         return this.player;
     }
 
     /**
-     * @returns Whether this position is a home position
+     * Gets this position's neighbour at the specified direction.
+     * @returns The specified neighbour position, or undefined if no neighbour.
     */
     public getNeighbour(direction: Direction): Position | undefined {
         switch (direction) {
@@ -75,46 +101,41 @@ export class Position {
     }
 
     /**
-     * @returns Index of this position
+     * Gets the index of this position.
+     * @returns The index of this position.
      */
-    public getIndex(): number {
+    getIndex(): number {
         return this.index;
     }
 
     /**
-     * @returns Number of mills this position is part of
+     * Gets the number of mils this position is part of.
+     * @returns The number of mills this position is part of.
      */
-    public getMillCounter(): number {
+    getMillCounter(): number {
         return this.millCounter;
     }
 
     /**
-     * Places a player's token onto this position
-     * There is no validation done here, validation must be done by whatever function calls this method
-     * @param player Player that occupies this position
+     * Places a player's token onto this position.
+     * @param player The player that occupies this position.
      */
-    public placeToken(player: number) {
-        switch (player) {
-            case 0:
-                this.player = Player.Cat;
-                break;
-            case 1:
-                this.player = Player.Dog;
-                break;
-        }
+    placeToken(player: Player): void {
+        this.player = player;
     }
 
     /**
-     * Removes a player's token from this position
+     * Removes a player's token from this position.
      */
-    public removeToken() {
+    removeToken(): void {
         this.player = undefined;
     }
 
     /**
+     * 
      * @returns Orientation of the mill this position is part of, if any
      */
-    public checkMill(): Orientation {
+    checkMill(): Orientation {
         let millVertical = this.checkOrientation(Orientation.Vertical);
         let millHorizontal = this.checkOrientation(Orientation.Horizontal);
         if (millVertical && millHorizontal) {
@@ -136,7 +157,7 @@ export class Position {
      * @param orientation Orientation to check for a mill
      * @returns Whether this position is part of a mill in the given orientation
      */
-    private checkOrientation(orientation: Orientation): boolean {
+    checkOrientation(orientation: Orientation): boolean {
         switch (orientation) {
             case Orientation.Vertical:
                 if (this.checkDirection(Direction.Up) + this.checkDirection(Direction.Down) == 2) {
@@ -148,7 +169,7 @@ export class Position {
                     return true;
                 }
                 break;
-            }
+        }
         return false;
     }
 
@@ -156,7 +177,7 @@ export class Position {
      * @param direction Direction to check for a neighbour
      * @returns Number of consecutive neighbours that belong to the same player in the given direction
      */
-    public checkDirection(direction: Direction): number {
+    checkDirection(direction: Direction): number {
         let neighbour = this.getNeighbour(direction);
         if (neighbour && (neighbour.getPlayer() == this.getPlayer())) {
             let counter = neighbour.checkDirection(direction);
@@ -164,13 +185,13 @@ export class Position {
         }
         return 0;
     }
-    /**
 
-    Updates the mill counter and the direction-specific mill counters for a given orientation.
-    @param orientation - The orientation of the mill.
-    @param addingMill - A boolean indicating whether a mill is being added or removed.
-    */
-    public updateMillCounterOrientation(orientation: Orientation, addingMill: boolean) {
+    /**
+     * Updates the mill counter and the direction-specific mill counters for a given orientation.
+     * @param orientation - The orientation of the mill.
+     * @param addingMill - A boolean indicating whether a mill is being added or removed.
+     */
+    updateMillCounterOrientation(orientation: Orientation, addingMill: boolean) {
         this.updateMillCounter(addingMill);
         switch (orientation) {
             case Orientation.Vertical:
@@ -191,12 +212,12 @@ export class Position {
                 break;
         }
     }
-    /**
 
-    Update the mill counter in the specified direction and recursively update in the same direction for neighbouring nodes.
-    @param {Direction} direction - The direction to update the mill counter in.
-    @param {boolean} addingMill - Whether to add or subtract from the mill counter.
-    */
+    /**
+     * Update the mill counter in the specified direction and recursively update in the same direction for neighbouring nodes.
+     * @param {Direction} direction - The direction to update the mill counter in.
+     * @param {boolean} addingMill - Whether to add or subtract from the mill counter.
+     */
     private updateMillCounterDirection(direction: Direction, addingMill: boolean) {
         let neighbour = this.getNeighbour(direction);
         if (neighbour) {
@@ -205,11 +226,11 @@ export class Position {
         }
 
     }
-    /**
 
-    Updates the mill counter based on whether a mill is being added or removed.
-    @param addingMill A boolean indicating whether a mill is being added (true) or removed (false).
-    */
+    /**
+     * Updates the mill counter based on whether a mill is being added or removed.
+     * @param addingMill A boolean indicating whether a mill is being added (true) or removed (false).
+     */
     private updateMillCounter(addingMill: boolean) {
         switch (addingMill) {
             case true:
