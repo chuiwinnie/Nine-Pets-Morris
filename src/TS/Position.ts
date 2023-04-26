@@ -47,7 +47,7 @@ export class Position {
      * @param player The player that occupies this position.
      * @param index The index of this position.
      */
-    constructor(player: Player | undefined, index: number) {
+    constructor(player: Player, index: number) {
         this.player = player;
         this.index = index;
         this.millCounter = 0;
@@ -58,7 +58,7 @@ export class Position {
      * @param direction The direction of the neighbour position.
      * @param neighbour The neighbour position.
      */
-    public setNeighbour(direction: Direction, neighbour: Position): void {
+    setNeighbour(direction: Direction, neighbour: Position): void {
         switch (direction) {
             case Direction.Up:
                 this.upNode = neighbour;
@@ -79,7 +79,7 @@ export class Position {
      * Gets the player that occupies this position.
      * @returns The player that occupies this position, or undefined if position not occupied.
      */
-    public getPlayer(): Player | undefined {
+    getPlayer(): Player {
         return this.player;
     }
 
@@ -87,7 +87,7 @@ export class Position {
      * Gets this position's neighbour at the specified direction.
      * @returns The specified neighbour position, or undefined if no neighbour.
     */
-    public getNeighbour(direction: Direction): Position | undefined {
+    getNeighbour(direction: Direction): Position {
         switch (direction) {
             case Direction.Up:
                 return this.upNode;
@@ -109,7 +109,7 @@ export class Position {
     }
 
     /**
-     * Gets the number of mils this position is part of.
+     * Gets the number of mills this position is part of.
      * @returns The number of mills this position is part of.
      */
     getMillCounter(): number {
@@ -132,113 +132,91 @@ export class Position {
     }
 
     /**
-     * 
-     * @returns Orientation of the mill this position is part of, if any
+     * Checks whether this position is part of a mill.
+     * @returns The orientation of the mill this position is part of, otherwise undefined if not part of a mill.
      */
     checkMill(): Orientation {
-        let millVertical = this.checkOrientation(Orientation.Vertical);
-        let millHorizontal = this.checkOrientation(Orientation.Horizontal);
-        if (millVertical && millHorizontal) {
+        let verticalMillFormed = (this.getConsecutiveTokenCount(Direction.Up) + this.getConsecutiveTokenCount(Direction.Down) == 2);
+        let horizontalMillFormed = (this.getConsecutiveTokenCount(Direction.Left) + this.getConsecutiveTokenCount(Direction.Right) == 2);
+
+        if (verticalMillFormed && horizontalMillFormed) {
             return Orientation.Both;
         }
-        else if (millVertical) {
+        else if (verticalMillFormed) {
             return Orientation.Vertical;
         }
-        else if (millHorizontal) {
+        else if (horizontalMillFormed) {
             return Orientation.Horizontal;
         }
         else {
-            return Orientation.None;
+            return undefined;
         }
     }
 
     /**
-     * Checks whether this position is part of a mill in a given orientation
-     * @param orientation Orientation to check for a mill
-     * @returns Whether this position is part of a mill in the given orientation
+     * Gets the number of consecutive neighbouring tokens that belong to the same player in the specified direction.
+     * @param direction The direction in which to check for consecutive tokens.
+     * @returns The number of consecutive tokens in the specified direction.
      */
-    checkOrientation(orientation: Orientation): boolean {
-        switch (orientation) {
-            case Orientation.Vertical:
-                if (this.checkDirection(Direction.Up) + this.checkDirection(Direction.Down) == 2) {
-                    return true;
-                }
-                break;
-            case Orientation.Horizontal:
-                if (this.checkDirection(Direction.Left) + this.checkDirection(Direction.Right) == 2) {
-                    return true;
-                }
-                break;
-        }
-        return false;
-    }
-
-    /**
-     * @param direction Direction to check for a neighbour
-     * @returns Number of consecutive neighbours that belong to the same player in the given direction
-     */
-    checkDirection(direction: Direction): number {
+    private getConsecutiveTokenCount(direction: Direction): number {
         let neighbour = this.getNeighbour(direction);
-        if (neighbour && (neighbour.getPlayer() == this.getPlayer())) {
-            let counter = neighbour.checkDirection(direction);
+        if (neighbour && neighbour.getPlayer() == this.getPlayer()) {
+            let counter = neighbour.getConsecutiveTokenCount(direction);
             return counter += 1;
         }
         return 0;
     }
 
     /**
-     * Updates the mill counter and the direction-specific mill counters for a given orientation.
-     * @param orientation - The orientation of the mill.
-     * @param addingMill - A boolean indicating whether a mill is being added or removed.
+     * Updates the mill counter of neighbour positions in the specified orientation.
+     * @param orientation The orientation of neighbour positions to update the mill counter in.
+     * @param millAdded Indicates whether a mill is added in this position.
      */
-    updateMillCounterOrientation(orientation: Orientation, addingMill: boolean) {
-        this.updateMillCounter(addingMill);
+    updateMillCounterOrientation(orientation: Orientation, millAdded: boolean) {
+        this.updateMillCounter(millAdded);
         switch (orientation) {
             case Orientation.Vertical:
-                this.updateMillCounterDirection(Direction.Up, addingMill);
-                this.updateMillCounterDirection(Direction.Down, addingMill);
+                this.updateMillCounterDirection(Direction.Up, millAdded);
+                this.updateMillCounterDirection(Direction.Down, millAdded);
                 break;
             case Orientation.Horizontal:
-                this.updateMillCounterDirection(Direction.Left, addingMill);
-                this.updateMillCounterDirection(Direction.Right, addingMill);
+                this.updateMillCounterDirection(Direction.Left, millAdded);
+                this.updateMillCounterDirection(Direction.Right, millAdded);
                 break;
             case Orientation.Both:
-                this.updateMillCounterDirection(Direction.Up, addingMill);
-                this.updateMillCounterDirection(Direction.Down, addingMill);
-                this.updateMillCounterDirection(Direction.Left, addingMill);
-                this.updateMillCounterDirection(Direction.Right, addingMill);
+                this.updateMillCounterDirection(Direction.Up, millAdded);
+                this.updateMillCounterDirection(Direction.Down, millAdded);
+                this.updateMillCounterDirection(Direction.Left, millAdded);
+                this.updateMillCounterDirection(Direction.Right, millAdded);
                 break;
-            case Orientation.None:
+            default:
                 break;
         }
     }
 
     /**
-     * Update the mill counter in the specified direction and recursively update in the same direction for neighbouring nodes.
-     * @param {Direction} direction - The direction to update the mill counter in.
-     * @param {boolean} addingMill - Whether to add or subtract from the mill counter.
+     * Updates the mill counter of neighbour positions in the specified direction.
+     * @param direction The direction of neighbour positions to update the mill counter in.
+     * @param millAdded Indicates whether a mill is added in this position.
      */
-    private updateMillCounterDirection(direction: Direction, addingMill: boolean) {
+    private updateMillCounterDirection(direction: Direction, millAdded: boolean) {
         let neighbour = this.getNeighbour(direction);
         if (neighbour) {
-            neighbour.updateMillCounter(addingMill);
-            neighbour.updateMillCounterDirection(direction, addingMill);
+            neighbour.updateMillCounter(millAdded);
+            neighbour.updateMillCounterDirection(direction, millAdded);
         }
 
     }
 
     /**
-     * Updates the mill counter based on whether a mill is being added or removed.
-     * @param addingMill A boolean indicating whether a mill is being added (true) or removed (false).
+     * Updates the mill counter of this position.
+     * @param millAdded Indicates whether a mill is added in this position.
      */
-    private updateMillCounter(addingMill: boolean) {
-        switch (addingMill) {
-            case true:
-                this.millCounter += 1;
-                break;
-            case false:
-                this.millCounter -= 1;
-                break;
+    private updateMillCounter(millAdded: boolean) {
+        if (millAdded) {
+            this.millCounter += 1;
+        } else {
+            this.millCounter -= 1;
         }
     }
 }
