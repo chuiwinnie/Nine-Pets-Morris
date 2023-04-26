@@ -6,29 +6,64 @@ import { Player } from "./enums/Player.js";
 import { Position } from "./Position.js";
 import { Direction } from "./enums/Direction.js";
 
+/**
+ * This class represents an Application that manages the game state, starts new games, and handles
+ * the user interface.
+ */
 export class Application {
+    /**
+     * An array of Game objects that have been created.
+     */
     private gameList: Game[];
+    
+    /**
+     * The Game object that is currently being played.
+     */
     private currentGame?: Game;
+    /**
+     * The Display object used to handle the user interface.
+     */
     private display: Display;
+    
+    /**
+     * The location of the text file used to load games.
+     */
     private txtFileLocation?: string;
-    private static applicationInstance: Application;
 
+    /**
+     * The singleton instance of the Application class.
+     */
+    private static applicationInstance: Application;
+    /**
+     * Constructs a new Application object with an empty game list and a new Display object.
+     */
     private constructor() {
         this.gameList = [];
         this.display = Display.getInstance();
     }
-
+    /**
+     * Returns the singleton instance of the Application class, creating it if necessary.
+     *
+     * @returns The singleton instance of the Application class.
+     */
     public static getInstance() {
         if (Application.applicationInstance == null) {
             Application.applicationInstance = new Application();
         }
         return Application.applicationInstance;
     }
-
+    /**
+     * Returns the Game object that is currently being played.
+     *
+     * @returns The current Game object, or undefined if no game is currently being played.
+     */
     public getCurrentGame() { 
         return this.currentGame;
     }
 
+    /**
+     * Starts a new game with an empty board and two teams (one with Player.Cat and one with Player.Dog).
+     */
     public startNewGame() {
         const boardHistory: Board[] = [];
         const teams: Team[] = [new Team(Player.Cat), new Team(Player.Dog)];
