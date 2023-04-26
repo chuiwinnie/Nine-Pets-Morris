@@ -158,7 +158,7 @@ export class Position {
      */
     public checkDirection(direction: Direction): number {
         let neighbour = this.getNeighbour(direction);
-        if (neighbour && neighbour.getPlayer() == this.getPlayer()) {
+        if (neighbour && (neighbour.getPlayer() == this.getPlayer())) {
             let counter = neighbour.checkDirection(direction);
             return counter += 1;
         }

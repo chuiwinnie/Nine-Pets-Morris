@@ -37,7 +37,9 @@ export class Game {
             this.boardHistory.push(this.currentBoard)
         }
         display.showBoard(this.currentBoard)
-        console.log(this.currentBoard)
+        if (this.checkVictory(this.currentBoard)){
+            display.showVictory(this.currentBoard.getOtherTeam().getPlayer())
+        }
     }
 
     /**
@@ -48,9 +50,9 @@ export class Game {
     public checkVictory(currentBoard: Board){
         let currentTeam = currentBoard.getCurrentTeam()
         if (currentTeam.getNumAliveTokens()<3){
-            return false
+            return true
         }
-        return true
+        return false
     }
 
 

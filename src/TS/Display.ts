@@ -143,6 +143,23 @@ export class Display {
 
         // draw all vertical lines
         this.drawVerticalLines(context);
+
+        this.displayInformation(board)
+    }
+
+    private displayInformation(board: Board) {
+        let catTeam = board.getTeam(Player.Cat);
+        let catAliveTokenCount = catTeam.getNumAliveTokens()
+        let catUnplacedTokenCount = catTeam.getNumUnplacedTokens()
+
+        let dogTeam = board.getTeam(Player.Dog);
+        let dogAliveTokenCount = dogTeam.getNumAliveTokens()
+        let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens()
+
+        document.getElementById("catAliveTokens").innerHTML = `Alive Tokens: ${catAliveTokenCount}`;
+        document.getElementById("catUnplacedTokens").innerHTML = `Unplaced Tokens: ${catUnplacedTokenCount}`;
+        document.getElementById("dogAliveTokens").innerHTML = `Alive Tokens: ${dogAliveTokenCount}`;
+        document.getElementById("dogUnplacedTokens").innerHTML = `Unplaced Tokens: ${dogUnplacedTokenCount}`;
     }
 
     private drawNodes(context: CanvasRenderingContext2D, board: Board) {
@@ -249,5 +266,7 @@ export class Display {
         context.stroke();
     }
 
-    public showVictory(team: Team) { }
+    public showVictory(team: Player) { 
+        console.log(Player[team] + " wins!");
+    }
 }

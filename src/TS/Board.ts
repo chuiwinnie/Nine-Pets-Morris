@@ -8,6 +8,7 @@ export class Board {
     currentPlayer: number
     positions: Position[]
     gamePhase: number
+    pickUpPosition?: number
 
     constructor(teams: Team[], currentPlayer: number, positions: Position[], gamePhase: number){
         this.teams = teams
@@ -23,6 +24,14 @@ export class Board {
         return this.teams[this.currentPlayer]
     }
 
+    public getOtherTeam(){
+        return this.teams[(this.currentPlayer+1)%2]
+    }
+
+    public getTeam(index: number) {
+        return this.teams[index]
+    }
+
     public getPositionTeam(index: number): Player | undefined {
         return this.positions[index].getPlayer()
     }
@@ -32,14 +41,17 @@ export class Board {
             case 0:
                 if (this.removeToken(index, true)) {
                     this.gamePhase++
+                    this.pickUpPosition = index
                 }
                 break;
             case 1:
-                if (this.placeToken(index)) {
-                    if (this.checkMill(index, true)) {
-                        this.gamePhase++
-                    } else {
-                        this.switchPlayingTeam()
+                if ((index != this.pickUpPosition)) {
+                    if (this.placeToken(index)) {
+                        if (this.checkMill(index, true)) {
+                            this.gamePhase++
+                        } else {
+                            this.switchPlayingTeam()
+                        }
                     }
                 }
                 break;
@@ -74,7 +86,6 @@ export class Board {
                 return false
             }
         }
-        console.log("removing token: "+ this.getCurrentTeam().getPlayer())
         //check if the token form a mill before remove
         let orientation = this.positions[index].checkMill();
         if (orientation!= Orientation.None){
@@ -82,6 +93,9 @@ export class Board {
             this.positions[index].updateMillCounterOrientation(orientation, false)
         }
         this.positions[index].removeToken()
+        if (!movingToken) {
+            this.getOtherTeam().removeToken()
+        }
         return true;
     }
     
@@ -90,7 +104,6 @@ export class Board {
         let currentTeam = this.getCurrentTeam()
         if (team == undefined){
             this.positions[index].placeToken(this.currentPlayer)
-            console.log(currentTeam)
             currentTeam.placeToken()
             return true
         }
@@ -106,6 +119,7 @@ export class Board {
         } else {
         this.gamePhase = 0
         }
+        this.pickUpPosition = undefined
     }
     /**
      * CheckMill method to check whether the position on the board form a mill
@@ -118,11 +132,6 @@ export class Board {
         let millOrientation = this.positions[index].checkMill();
         this.positions[index].updateMillCounterOrientation(millOrientation, addingMill)
 
-        if (millOrientation == Orientation.None){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return (millOrientation != Orientation.None)
     }
 }
