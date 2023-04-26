@@ -164,7 +164,12 @@ export class Position {
         }
         return 0;
     }
+    /**
 
+    Updates the mill counter and the direction-specific mill counters for a given orientation.
+    @param orientation - The orientation of the mill.
+    @param addingMill - A boolean indicating whether a mill is being added or removed.
+    */
     public updateMillCounterOrientation(orientation: Orientation, addingMill: boolean) {
         this.updateMillCounter(addingMill);
         switch (orientation) {
@@ -186,7 +191,12 @@ export class Position {
                 break;
         }
     }
+    /**
 
+    Update the mill counter in the specified direction and recursively update in the same direction for neighbouring nodes.
+    @param {Direction} direction - The direction to update the mill counter in.
+    @param {boolean} addingMill - Whether to add or subtract from the mill counter.
+    */
     private updateMillCounterDirection(direction: Direction, addingMill: boolean) {
         let neighbour = this.getNeighbour(direction);
         if (neighbour) {
@@ -195,7 +205,11 @@ export class Position {
         }
 
     }
+    /**
 
+    Updates the mill counter based on whether a mill is being added or removed.
+    @param addingMill A boolean indicating whether a mill is being added (true) or removed (false).
+    */
     private updateMillCounter(addingMill: boolean) {
         switch (addingMill) {
             case true:
