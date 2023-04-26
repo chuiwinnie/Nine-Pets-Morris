@@ -20,11 +20,11 @@ export class Board {
      * Getter method of playingteam
      * @returns playingTeam
      */
-    public getCurrentTeam(){
+    public getPlayingTeam(){
         return this.teams[this.currentPlayer]
     }
 
-    public getOtherTeam(){
+    public getNonPlayingTeam(){
         return this.teams[(this.currentPlayer+1)%2]
     }
 
@@ -45,7 +45,7 @@ export class Board {
                 }
                 break;
             case 1:
-                if ((index != this.pickUpPosition)) {
+                if (index != this.pickUpPosition) {
                     if (this.placeToken(index)) {
                         if (this.checkMill(index, true)) {
                             this.gamePhase++
@@ -76,13 +76,13 @@ export class Board {
         //check if player moving a token from one place to a target position
         if (movingToken){
             //check if the token belongs to the player
-            if ((team == undefined) || (team != this.getCurrentTeam().getPlayer())){
+            if ((team == undefined) || (team != this.getPlayingTeam().getPlayer())){
                 return false
             }
         //if it is removing opponent's token
         } else {
             //check if player select oponent's token
-            if (team == this.getCurrentTeam().getPlayer()){
+            if (team == this.getPlayingTeam().getPlayer()){
                 return false
             }
         }
@@ -94,14 +94,14 @@ export class Board {
         }
         this.positions[index].removeToken()
         if (!movingToken) {
-            this.getOtherTeam().removeToken()
+            this.getNonPlayingTeam().removeToken()
         }
         return true;
     }
     
     public placeToken(index: number){
         let team = this.positions[index].getPlayer()
-        let currentTeam = this.getCurrentTeam()
+        let currentTeam = this.getPlayingTeam()
         if (team == undefined){
             this.positions[index].placeToken(this.currentPlayer)
             currentTeam.placeToken()
@@ -114,7 +114,7 @@ export class Board {
 
     public switchPlayingTeam(){
         this.currentPlayer = (this.currentPlayer + 1) % 2
-        if (this.getCurrentTeam().getNumUnplacedTokens() > 0){
+        if (this.getPlayingTeam().getNumUnplacedTokens() > 0){
             this.gamePhase = 1;
         } else {
         this.gamePhase = 0

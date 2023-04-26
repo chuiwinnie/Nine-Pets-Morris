@@ -1,10 +1,8 @@
 import { Game } from "./Game.js";
 import { Board } from "./Board.js";
-import { Team } from "./Team.js";
 import { Application } from "./Application.js";
 import { Player } from "./enums/Player.js";
 
-const canvas = <HTMLCanvasElement>document.getElementById('canvas');
 
 const CANVAS_WIDTH = window.innerWidth * 0.8;
 const CANVAS_HEIGHT = window.innerHeight * 0.8;
@@ -52,48 +50,6 @@ const NODES = [
     NODE_19, NODE_20, NODE_21, NODE_22, NODE_23, NODE_24
 ];
 
-canvas.onclick = function (e) {
-    var rect = canvas.getBoundingClientRect(),  // get absolute position of canvas
-        x = e.clientX - rect.left,              // adjust mouse-position
-        y = e.clientY - rect.top;
-
-    const context = canvas.getContext('2d');
-    if (context == null) return;
-
-    for (let i = 0; i < NODES.length; i++) {
-        const node = NODES[i];
-        getArc(context, node[0], node[1], NODE_RADIUS);
-        if (context.isPointInPath(x, y)) {
-            Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false)
-        }
-    }
-};
-
-function getArc(context: CanvasRenderingContext2D, x: number, y: number, r: number) {
-    context.beginPath();
-    context.arc(x, y, r, 0, Math.PI * 2);
-    context.closePath();
-}
-
-function addTokenImage(context: CanvasRenderingContext2D, x: number, y: number, player: Player) {
-    const image = new Image();
-    switch (player) {
-        case (0):
-            image.src = "./assets/cat.png";
-            break;
-        case (1):
-            image.src = "./assets/dog.png";
-            break;
-        default:
-            break;
-    }
-
-    image.onload = function () {
-        context.drawImage(image, x - TOKEN_SIZE * 0.5, y - TOKEN_SIZE * 0.5, TOKEN_SIZE, TOKEN_SIZE);
-    }
-}
-
-
 export class Display {
     private static displayInstance: Display;
 
@@ -110,13 +66,28 @@ export class Display {
 
     public showGameList(gameList: Game[]) { }
 
-    /*
     public showBoard(board: Board) {
-        this.drawBoard();
-    }
-    */
+        // set up canvas and get its context
+        const context = this.setUpCanvas();
 
-    public showBoard(board: Board) {
+        // draw all nodes
+        this.drawNodes(context, board);
+
+        // draw all horizontal lines
+        this.drawHorizontalLines(context);
+
+        // draw all vertical lines
+        this.drawVerticalLines(context);
+
+        // dislay game state information
+        this.displayInformation(board)
+
+        // detect which node has been clicked by user
+        this.detectNodeClick()
+    }
+
+    private setUpCanvas() {
+        const canvas = <HTMLCanvasElement>document.getElementById('canvas');
         if (!canvas) {
             return;
         }
@@ -135,31 +106,7 @@ export class Display {
         context.strokeStyle = 'black';
         context.lineWidth = 3;
 
-        // draw all nodes
-        this.drawNodes(context, board);
-
-        // draw all horizontal lines
-        this.drawHorizontalLines(context);
-
-        // draw all vertical lines
-        this.drawVerticalLines(context);
-
-        this.displayInformation(board)
-    }
-
-    private displayInformation(board: Board) {
-        let catTeam = board.getTeam(Player.Cat);
-        let catAliveTokenCount = catTeam.getNumAliveTokens()
-        let catUnplacedTokenCount = catTeam.getNumUnplacedTokens()
-
-        let dogTeam = board.getTeam(Player.Dog);
-        let dogAliveTokenCount = dogTeam.getNumAliveTokens()
-        let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens()
-
-        document.getElementById("catAliveTokens").innerHTML = `Alive Tokens: ${catAliveTokenCount}`;
-        document.getElementById("catUnplacedTokens").innerHTML = `Unplaced Tokens: ${catUnplacedTokenCount}`;
-        document.getElementById("dogAliveTokens").innerHTML = `Alive Tokens: ${dogAliveTokenCount}`;
-        document.getElementById("dogUnplacedTokens").innerHTML = `Unplaced Tokens: ${dogUnplacedTokenCount}`;
+        return context;
     }
 
     private drawNodes(context: CanvasRenderingContext2D, board: Board) {
@@ -169,17 +116,17 @@ export class Display {
             context.arc(node[0], node[1], NODE_RADIUS, 0, 2 * Math.PI, false);
             context.fill();
             context.stroke();
+
             switch(board.getPositionTeam(i)) {
-                case 0:
-                    addTokenImage(context, node[0], node[1], Player.Cat);
+                case Player.Cat:
+                    this.addTokenImage(context, node[0], node[1], Player.Cat);
                     break;
-                case 1:
-                    addTokenImage(context, node[0], node[1], Player.Dog);
+                case Player.Dog:
+                    this.addTokenImage(context, node[0], node[1], Player.Dog);
                     break;
                 default:
                     break;
             }
-
         }
     }
 
@@ -231,11 +178,6 @@ export class Display {
         context.stroke();
 
         context.beginPath();
-        context.moveTo(NODE_1[0], NODE_1[1]);
-        context.lineTo(NODE_7[0], NODE_7[1]);
-        context.stroke();
-
-        context.beginPath();
         context.moveTo(NODE_2[0], NODE_2[1]);
         context.lineTo(NODE_8[0], NODE_8[1]);
         context.stroke();
@@ -243,30 +185,77 @@ export class Display {
         context.beginPath();
         context.moveTo(NODE_2[0], NODE_2[1]);
         context.lineTo(NODE_8[0], NODE_8[1]);
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(NODE_3[0], NODE_3[1]);
-        context.lineTo(NODE_9[0], NODE_9[1]);
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(NODE_16[0], NODE_16[1]);
-        context.lineTo(NODE_22[0], NODE_22[1]);
         context.stroke();
 
         context.beginPath();
         context.moveTo(NODE_17[0], NODE_17[1]);
         context.lineTo(NODE_23[0], NODE_23[1]);
         context.stroke();
-
-        context.beginPath();
-        context.moveTo(NODE_18[0], NODE_18[1]);
-        context.lineTo(NODE_24[0], NODE_24[1]);
-        context.stroke();
     }
 
-    public showVictory(team: Player) { 
+    private displayInformation(board: Board) {
+        let catTeam = board.getTeam(Player.Cat);
+        let catAliveTokenCount = catTeam.getNumAliveTokens()
+        let catUnplacedTokenCount = catTeam.getNumUnplacedTokens()
+
+        let dogTeam = board.getTeam(Player.Dog);
+        let dogAliveTokenCount = dogTeam.getNumAliveTokens()
+        let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens()
+
+        document.getElementById("currentTurn").innerHTML = `Current Turn: ${Player[board.getPlayingTeam().getPlayer()]}`;
+        document.getElementById("catAliveTokens").innerHTML = `Alive Tokens: ${catAliveTokenCount}`;
+        document.getElementById("catUnplacedTokens").innerHTML = `Unplaced Tokens: ${catUnplacedTokenCount}`;
+        document.getElementById("dogAliveTokens").innerHTML = `Alive Tokens: ${dogAliveTokenCount}`;
+        document.getElementById("dogUnplacedTokens").innerHTML = `Unplaced Tokens: ${dogUnplacedTokenCount}`;
+    }
+
+    private detectNodeClick() {
+        const canvas = <HTMLCanvasElement>document.getElementById('canvas');
+
+        canvas.onclick = function (e) {
+            var rect = canvas.getBoundingClientRect(),  // get absolute position of canvas
+                x = e.clientX - rect.left,              // adjust mouse-position
+                y = e.clientY - rect.top;
+        
+            const context = canvas.getContext('2d');
+            if (context == null) return;
+        
+            for (let i = 0; i < NODES.length; i++) {
+                const node = NODES[i];
+                getArc(context, node[0], node[1], NODE_RADIUS);
+                if (context.isPointInPath(x, y)) {
+                    Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false)
+                }
+            }
+        };
+
+        function getArc(context: CanvasRenderingContext2D, x: number, y: number, r: number) {
+            context.beginPath();
+            context.arc(x, y, r, 0, Math.PI * 2);
+            context.closePath();
+        }
+    }
+
+    private addTokenImage(context: CanvasRenderingContext2D, x: number, y: number, player: Player) {
+        const image = new Image();
+        switch (player) {
+            case (Player.Cat):
+                image.src = "./assets/cat.png";
+                break;
+            case (Player.Dog):
+                image.src = "./assets/dog.png";
+                break;
+            default:
+                break;
+        }
+    
+        image.onload = function () {
+            context.drawImage(image, x - TOKEN_SIZE * 0.5, y - TOKEN_SIZE * 0.5, TOKEN_SIZE, TOKEN_SIZE);
+        }
+    }
+
+    public showVictory(team: Player) {
+        document.getElementById("currentTurn").innerHTML = `${Player[team]} Wins!`;
         console.log(Player[team] + " wins!");
     }
 }

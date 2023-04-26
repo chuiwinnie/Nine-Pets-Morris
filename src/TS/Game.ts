@@ -1,8 +1,8 @@
 import { Board } from "./Board.js"
 import { Display } from "./Display.js";
-import {PlaceTokenAction} from "./Actions/PlaceTokenAction.js"
-import {RemoveTokenAction} from "./Actions/RemoveTokenAction.js"
-import {SwitchTurnAction} from "./Actions/SwitchTurnAction.js"
+import { PlaceTokenAction } from "./Actions/PlaceTokenAction.js"
+import { RemoveTokenAction } from "./Actions/RemoveTokenAction.js"
+import { SwitchTurnAction } from "./Actions/SwitchTurnAction.js"
 
 /**
  * Game class to implement the game and allow the game to be played
@@ -14,7 +14,7 @@ export class Game {
 
 
     //Constructor
-    constructor (boardHistory: Board[], currentBoard: Board){
+    constructor(boardHistory: Board[], currentBoard: Board) {
         this.boardHistory = boardHistory;
         this.currentBoard = currentBoard;
     }
@@ -24,8 +24,8 @@ export class Game {
      * @param display Display type - the display object used to update the game board
      * @param gameIndex number - gameIndex of the current game being played
      */
-    public run(display: Display, gameIndex: number){
-            display.showBoard(this.currentBoard);
+    public run(display: Display, gameIndex: number) {
+        display.showBoard(this.currentBoard);
     }
 
 
@@ -37,8 +37,8 @@ export class Game {
             this.boardHistory.push(this.currentBoard)
         }
         display.showBoard(this.currentBoard)
-        if (this.checkVictory(this.currentBoard)){
-            display.showVictory(this.currentBoard.getOtherTeam().getPlayer())
+        if (this.checkVictory(this.currentBoard)) {
+            display.showVictory(this.currentBoard.getNonPlayingTeam().getPlayer())
         }
     }
 
@@ -47,9 +47,9 @@ export class Game {
      * @param Board type currentBoard - The current state of the game board.
      * @returns boolean - True if the victory condition has not been met, false otherwise.
      */
-    public checkVictory(currentBoard: Board){
-        let currentTeam = currentBoard.getCurrentTeam()
-        if (currentTeam.getNumAliveTokens()<3){
+    public checkVictory(currentBoard: Board) {
+        let currentTeam = currentBoard.getPlayingTeam()
+        if (currentTeam.getNumAliveTokens() < 3) {
             return true
         }
         return false
@@ -61,9 +61,9 @@ export class Game {
      * @param display - The display object used to update the game board.
      * @param gameIndex - The index of the current game being played.
      */
-    public undo(display: Display){
+    public undo(display: Display) {
         this.boardHistory.pop()
-        this.currentBoard = this.boardHistory[this.boardHistory.length-1]
+        this.currentBoard = this.boardHistory[this.boardHistory.length - 1]
         display.showBoard(this.currentBoard)
     }
 }
