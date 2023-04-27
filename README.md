@@ -1,5 +1,11 @@
 # FIT3077 Project
 
+### Setup
+1. Open new terminal
+2. Open directory into "src"
+3. Run "tsc -p tsconfig.json"
+4. Run Application.html as live server
+
 ### Team Information
 
 <b>Team 19 - Pet Store:</b>
