@@ -23,16 +23,3 @@ This folder contains all the Sprint 1 deliverables/documents in PDF format, incl
 2. User Stories
 3. Architecture
 4. UI Design
-
-### Contribution Log
-
-<b>Jiawei Liao<b>
-Contributed to discussions around the implementation of the 9 Men’s Morris game.
-Such discussions include:
-Class diagrams, involving which classes are needed, how they are related to each other with multiplicities and what attributes and methods each class needs or should have.
-What a method actually does.
-Implementing what was discussed into code.
-Helping out with the frontend.
-Checking over other teammates’s code.
-Writing parts of the architecture and design rationale document.
-Testing the implementation to see if it works and fixing any bugs found.
