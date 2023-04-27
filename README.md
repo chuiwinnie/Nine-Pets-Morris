@@ -1,10 +1,14 @@
 # FIT3077 Project
 
-### Setup
+### Application Setup
+Follow the below steps to compile and run the 9MM application.
+
 1. Open new terminal
-2. Open directory into "src"
-3. Run "tsc -p tsconfig.json"
+2. Open directory into `src`
+3. Run `tsc -p tsconfig.json`
 4. Run Application.html as live server
+
+---
 
 ### Team Information
 
@@ -17,9 +21,17 @@
 
 ### Repository Structure
 
-#### doc
+#### doc/Sprint1
 This folder contains all the Sprint 1 deliverables/documents in PDF format, including:
 1. Team Information
 2. User Stories
 3. Architecture
 4. UI Design
+
+#### doc/Sprint2
+This folder contains all the Sprint 2 deliverables/documents in a single PDF, including:
+1. Architecture
+2. Design Rationales
+
+#### src
+This folder contains all the code for the 9MM aplication.
