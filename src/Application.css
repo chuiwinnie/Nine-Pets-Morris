@@ -1,10 +1,10 @@
 img.cat {
-    width: 30%;
+    width: 40%;
     float: right;
 }
 
 img.dog {
-    width: 30%;
+    width: 40%;
     float: left;
 }
 
@@ -14,4 +14,15 @@ img.dog {
 
 .column {
     flex: 50%;
+}
+
+.currentTurn {
+    float: right;
+}
+
+img.currentTurnImage {
+    width: 20%;
+    float: left;
+    padding-top: 10px;
+    padding-left: 10px;
 }

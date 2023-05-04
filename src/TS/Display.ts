@@ -242,7 +242,7 @@ export class Display {
         let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens();
 
         // update the HTML elements with the game state information
-        document.getElementById("currentTurn").innerHTML = `Current Turn: ${Player[board.getPlayingTeam().getPlayer()]}`;
+        document.getElementById("currentTurnImage").innerHTML = `<img class="currentTurnImage" src="assets/${Player[board.getPlayingTeam().getPlayer()].toLowerCase()}.png">`;
         document.getElementById("catAliveTokens").innerHTML = `Alive Tokens: ${catAliveTokenCount}`;
         document.getElementById("catUnplacedTokens").innerHTML = `Unplaced Tokens: ${catUnplacedTokenCount}`;
         document.getElementById("dogAliveTokens").innerHTML = `Alive Tokens: ${dogAliveTokenCount}`;
