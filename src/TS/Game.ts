@@ -32,7 +32,7 @@ export class Game {
      * Runs the game and updates the display continuosly until a victory condition is met.
      * @param display The Display object used to show the game.
      */
-    run(display: Display): void {        
+    run(display: Display): void {
         display.showBoard(this.currentBoard);
     }
 
@@ -64,6 +64,7 @@ export class Game {
     private performAction(index: number): void {
         let updatedBoard: Board;
         switch (this.currentBoard.getGamePhase()) {
+            // pick up token
             case 0:
                 let moveTokenAction = new RemoveTokenAction(this.currentBoard, index, true);
                 updatedBoard = moveTokenAction.execute();
@@ -71,6 +72,7 @@ export class Game {
                     this.currentBoard = updatedBoard;
                 }
                 break;
+            // place token
             case 1:
                 if (index != this.currentBoard.getPickUpPosition()) {
                     let placeTokenAction = new PlaceTokenAction(this.currentBoard, index);
@@ -78,6 +80,7 @@ export class Game {
                     this.currentBoard = updatedBoard;
                 }
                 break;
+            // remove token
             case 2:
                 let removeTokenAction = new RemoveTokenAction(this.currentBoard, index, false);
                 updatedBoard = removeTokenAction.execute();
