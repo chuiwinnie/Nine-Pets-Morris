@@ -242,10 +242,19 @@ export class Display {
         let dogUnplacedTokenCount = dogTeam.getNumUnplacedTokens();
 
         // update the HTML elements with the game state information
-        if (board.getGamePhase() == 2) {
-            document.getElementById("removeTokenMessage").innerHTML = `Remove an opponent's token!`;
-        } else {
-            document.getElementById("removeTokenMessage").innerHTML = ``;
+        switch (board.getGamePhase()) {
+            case 0:
+                document.getElementById("moveMessage").innerHTML = `Pick up your token!`;
+                break;
+            case 1:
+                document.getElementById("moveMessage").innerHTML = `Place your token!`;
+                break;
+            case 2:
+                document.getElementById("moveMessage").innerHTML = `Remove an opponent's token!`;
+                break;
+            default:
+                document.getElementById("moveMessage").innerHTML = ``;
+                break;
         }
         document.getElementById("currentTurnImage").innerHTML = `<img class="currentTurnImage" src="assets/${Player[board.getPlayingTeam().getPlayer()].toLowerCase()}.png">`;
 
