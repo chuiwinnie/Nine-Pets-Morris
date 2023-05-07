@@ -125,6 +125,30 @@ export class Position {
         return emptyNeighbour;
     }
 
+    isNeighbour(index: number): boolean {
+        if (this.getNeighbour(Direction.Up)) {
+            if (this.getNeighbour(Direction.Up).getIndex() == index) {
+                return true;
+            }
+        }
+        if (this.getNeighbour(Direction.Down)) {
+            if (this.getNeighbour(Direction.Down).getIndex() == index) {
+                return true;
+            }
+        }
+        if (this.getNeighbour(Direction.Left)) {
+            if (this.getNeighbour(Direction.Left).getIndex() == index) {
+                return true;
+            }
+        }
+        if (this.getNeighbour(Direction.Right)) {
+            if (this.getNeighbour(Direction.Right).getIndex() == index) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Gets the index of this position.
      * @returns The index of this position.
