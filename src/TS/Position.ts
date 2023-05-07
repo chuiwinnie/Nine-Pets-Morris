@@ -101,38 +101,37 @@ export class Position {
     }
 
     /**
-     * Finds whether this position is stock (adjacent positions are occupied).
-     * @returns whether the position is stuck (adjacent positions are occupied)
+     * Determines whether the token at this position is stuck (all adjacent positions are occupied).
+     * @returns true if the token at this position is stuck, false otherwise.
      */
     isStuck(): boolean {
-        let emptyNeighbour = true;
         if (this.getNeighbour(Direction.Up)) {
             if (this.getNeighbour(Direction.Up).getPlayer() == undefined) {
-                emptyNeighbour = false;
+                return false;
             }
         }
         if (this.getNeighbour(Direction.Down)) {
             if (this.getNeighbour(Direction.Down).getPlayer() == undefined) {
-                emptyNeighbour = false;
+                return false;
             }
         }
         if (this.getNeighbour(Direction.Left)) {
             if (this.getNeighbour(Direction.Left).getPlayer() == undefined) {
-                emptyNeighbour = false;
+                return false;
             }
         }
         if (this.getNeighbour(Direction.Right)) {
             if (this.getNeighbour(Direction.Right).getPlayer() == undefined) {
-                emptyNeighbour = false;
+                return false;
             }
         }
-        return emptyNeighbour;
+        return true;
     }
 
     /**
-     * Returns a boolean on whether the index is a neighbour of this position
-     * @param index index of the neighbour to check
-     * @returns true if the index is a neighbour or false if it is not a neighbour
+     * Determines whether the position at the specified index is a neighbour of this position.
+     * @param index The index of the position to check for.
+     * @returns true if the specified position index is a neighbour, false otherwise.
      */
     isNeighbour(index: number): boolean {
         if (this.getNeighbour(Direction.Up)) {
