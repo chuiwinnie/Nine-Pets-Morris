@@ -245,10 +245,10 @@ export class Display {
         // update the HTML elements with the game state information
         switch (board.getGamePhase()) {
             case 0:
-                document.getElementById("moveMessage").innerHTML = `Pick up your token!`;
+                document.getElementById("moveMessage").innerHTML = `Pick up one of your tokens.`;
                 break;
             case 1:
-                document.getElementById("moveMessage").innerHTML = `Place your token!`;
+                document.getElementById("moveMessage").innerHTML = `Place your token.`;
                 break;
             case 2:
                 document.getElementById("moveMessage").innerHTML = `Remove an opponent's token!`;

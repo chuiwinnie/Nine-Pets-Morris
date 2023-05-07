@@ -50,7 +50,7 @@ export class Game {
             this.boardHistory.push(this.currentBoard);
         }
 
-        if (this.checkVictory(this.currentBoard)) {
+        if (this.checkVictory(this.currentBoard) && this.currentBoard.getGamePhase()!=1) {
             display.showBoard(this.currentBoard, true);
             display.showVictory(this.currentBoard.getNonPlayingTeam().getPlayer());
         } else {
