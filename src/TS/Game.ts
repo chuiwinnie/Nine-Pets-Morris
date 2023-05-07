@@ -75,8 +75,8 @@ export class Game {
                 break;
             // place token
             case 1:
-                if ((index != this.currentBoard.getPickUpPosition()) && ((this.currentBoard.getPositions()[index].isNeighbour(this.currentBoard.getPickUpPosition()))) || this.currentBoard.getPickUpPosition() == undefined) {
-                    let placeTokenAction = new PlaceTokenAction(this.currentBoard, index);
+                if (index != this.currentBoard.getPickUpPositionIndex()) {
+                    let placeTokenAction = new PlaceTokenAction(this.currentBoard, index, this.currentBoard.getPickUpPositionIndex());
                     updatedBoard = placeTokenAction.execute();
                     this.currentBoard = updatedBoard;
                 }

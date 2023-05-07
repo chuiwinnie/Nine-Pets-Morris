@@ -29,9 +29,9 @@ export class Board {
     private gamePhase: number;
 
     /**
-     * The position where the last token was picked up.
+     * The position index of where the last token was picked up.
      */
-    private pickUpPosition?: number;
+    private pickUpPositionIndex?: number;
 
     /**
      * Constructs a new board.
@@ -203,8 +203,8 @@ export class Board {
      * Gets the position index of where the last token was picked up.
      * @returns The position where the last token was picked up.
      */
-    getPickUpPosition(): number {
-        return this.pickUpPosition;
+    getPickUpPositionIndex(): number {
+        return this.pickUpPositionIndex;
     }
 
     /**
@@ -215,11 +215,11 @@ export class Board {
     }
 
     /**
-     * Sets the last pick up position of the board.
+     * Sets the last pick up position index of the board.
      * @param index The position index where the last token was picked up.
      */
     setPickUpPosition(index: number): void {
-        this.pickUpPosition = index;
+        this.pickUpPositionIndex = index;
     }
 
     /**
@@ -234,7 +234,7 @@ export class Board {
             this.gamePhase = 0;
         }
 
-        this.pickUpPosition = undefined;
+        this.pickUpPositionIndex = undefined;
     }
 
     /**

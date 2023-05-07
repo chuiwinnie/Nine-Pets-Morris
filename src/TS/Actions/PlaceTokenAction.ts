@@ -12,13 +12,20 @@ export class PlaceTokenAction extends Action {
     private positionIndex: number;
 
     /**
+     * The index of the position where the token was last picked up.
+     */
+    private pickUpPositionIndex: number;
+
+    /**
      * Constructs a place token action.
      * @param board The board to perform this place token action on.
      * @param positionIndex The position index to place the token.
+     * @param previousPositionIndex The position index of where the token was last picked up, undefined if not applicable.
      */
-    constructor(board: Board, positionIndex: number) {
+    constructor(board: Board, positionIndex: number, previousPositionIndex: number) {
         super(board);
         this.positionIndex = positionIndex;
+        this.pickUpPositionIndex = previousPositionIndex;
     }
 
     /**
@@ -42,14 +49,28 @@ export class PlaceTokenAction extends Action {
      */
     private placeToken(): boolean {
         let position = this.getBoard().getPositions()[this.positionIndex];
+        let pickUpPosition = undefined;
+        if (this.pickUpPositionIndex) {
+            pickUpPosition = this.getBoard().getPositions()[this.pickUpPositionIndex];
+        }
         let currentTeam = this.getBoard().getPlayingTeam();
         let currentPlayer = currentTeam.getPlayer();
 
-        // place the token at the specified position if unoccupied
-        if (position.getPlayer() == undefined) {
-            position.placeToken(currentPlayer);
-            currentTeam.placeToken();
-            return true;
+        // if this place token action is a part of moving a token
+        if (pickUpPosition) {
+            // place the picked up token if the specified position is unoccupied and is a neighbour or if the playing team has 3 or less alive tokens left
+            if (position.getPlayer() == undefined && (pickUpPosition.isNeighbour(this.positionIndex) || currentTeam.getNumAliveTokens() <= 3)) {
+                position.placeToken(currentPlayer);
+                currentTeam.placeToken();
+                return true;
+            }
+        } else {
+            // place the new token if the specified position is unoccupied
+            if (position.getPlayer() == undefined) {
+                position.placeToken(currentPlayer);
+                currentTeam.placeToken();
+                return true;
+            }
         }
 
         return false;
