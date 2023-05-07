@@ -100,6 +100,10 @@ export class Position {
         }
     }
 
+    /**
+     * Finds whether this position is stock (adjacent positions are occupied).
+     * @returns whether the position is stuck (adjacent positions are occupied)
+     */
     isStuck(): boolean {
         let emptyNeighbour = true;
         if (this.getNeighbour(Direction.Up)) {
@@ -125,6 +129,11 @@ export class Position {
         return emptyNeighbour;
     }
 
+    /**
+     * Returns a boolean on whether the index is a neighbour of this position
+     * @param index index of the neighbour to check
+     * @returns true if the index is a neighbour or false if it is not a neighbour
+     */
     isNeighbour(index: number): boolean {
         if (this.getNeighbour(Direction.Up)) {
             if (this.getNeighbour(Direction.Up).getIndex() == index) {
