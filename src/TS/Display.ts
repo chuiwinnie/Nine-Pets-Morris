@@ -100,14 +100,15 @@ export class Display {
     /**
      * Shows the game board.
      * @param board The game board to display.
+     * @param lastBoard Whether the board to be displayed is the last board/turn of the game.
      */
-    showBoard(board: Board): void {
+    showBoard(board: Board, lastBoard?: boolean): void {
         const context = this.setUpCanvas();
         this.drawNodes(context);
         this.drawHorizontalLines(context);
         this.drawVerticalLines(context);
         this.displayGameInfo(board);
-        this.detectNodeClick();
+        this.detectNodeClick(lastBoard ?? false);
 
         // add tokens at the correct positions
         for (let i = 0; i < Display.NODES.length; i++) {
@@ -266,8 +267,9 @@ export class Display {
 
     /**
      * Detects whether a game board node is clicked and triggers an action.
+     * @param lastBoard Whether the board to be displayed is the last board/turn of the game.
      */
-    private detectNodeClick(): void {
+    private detectNodeClick(lastBoard: boolean): void {
         const canvas = <HTMLCanvasElement>document.getElementById('canvas');
         const context = canvas.getContext('2d');
 
@@ -281,8 +283,9 @@ export class Display {
             for (let i = 0; i < Display.NODES.length; i++) {
                 const node = Display.NODES[i];
                 getArc(context, node[0], node[1], Display.NODE_RADIUS * 2);
-                if (context.isPointInPath(x, y)) {
-                    // trigger an action on the current game
+
+                // trigger an action on the current game if it is not displaying the last board/turn of the game
+                if (context.isPointInPath(x, y) && !lastBoard) {
                     Application.getInstance().getCurrentGame().action(Display.getInstance(), i, false);
                 }
             }
@@ -332,6 +335,6 @@ export class Display {
      * @param player The winning player.
      */
     showVictory(player: Player): void {
-        document.getElementById("currentTurn").innerHTML = `${Player[player]} Wins!`;
+        document.getElementById("moveMessage").innerHTML = `${Player[player]} Wins!`;
     }
 }

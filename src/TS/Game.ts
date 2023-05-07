@@ -50,10 +50,11 @@ export class Game {
             this.boardHistory.push(this.currentBoard);
         }
 
-        display.showBoard(this.currentBoard);
-
         if (this.checkVictory(this.currentBoard)) {
+            display.showBoard(this.currentBoard, true);
             display.showVictory(this.currentBoard.getNonPlayingTeam().getPlayer());
+        } else {
+            display.showBoard(this.currentBoard);
         }
     }
 
@@ -112,9 +113,27 @@ export class Game {
      */
     checkVictory(currentBoard: Board): boolean {
         let currentTeam = currentBoard.getPlayingTeam();
+
+        // current team loses if it has less than 3 alive tokens
         if (currentTeam.getNumAliveTokens() < 3) {
             return true;
         }
-        return false;
+
+        // current team is still in the game if it has not placed all its tokens
+        if (currentTeam.getNumUnplacedTokens() > 0) {
+            return false;
+        }
+
+        let unableToMove = true;
+        for (let i=0 ; i < this.currentBoard.getPositions().length ; i++) {
+            let currentPosition = this.currentBoard.getPositions()[i];
+            // current team is still in the game if it has at least 1 position that is not stuck
+            if (currentPosition.getPlayer() == this.currentBoard.getPlayingTeam().getPlayer() && !currentPosition.isStuck()) {
+                unableToMove = false;
+                break;
+            }
+        }
+        
+        return unableToMove;
     }
 }
