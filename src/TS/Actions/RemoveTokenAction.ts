@@ -52,6 +52,10 @@ export class RemoveTokenAction extends Action {
         let playingTeamPlayer = this.getBoard().getPlayingTeam().getPlayer();
         let nonPlayingTeamPlayer = this.getBoard().getNonPlayingTeam().getPlayer();
 
+        if (this.movingOwnToken && position.isStuck()) {
+            return false;
+        }
+
         // check if player is moving their own token from the specified position
         if (this.movingOwnToken) {
             // check if the token belongs to the player

@@ -100,6 +100,31 @@ export class Position {
         }
     }
 
+    isStuck(): boolean {
+        let emptyNeighbour = true;
+        if (this.getNeighbour(Direction.Up)) {
+            if (this.getNeighbour(Direction.Up).getPlayer() == undefined) {
+                emptyNeighbour = false;
+            }
+        }
+        if (this.getNeighbour(Direction.Down)) {
+            if (this.getNeighbour(Direction.Down).getPlayer() == undefined) {
+                emptyNeighbour = false;
+            }
+        }
+        if (this.getNeighbour(Direction.Left)) {
+            if (this.getNeighbour(Direction.Left).getPlayer() == undefined) {
+                emptyNeighbour = false;
+            }
+        }
+        if (this.getNeighbour(Direction.Right)) {
+            if (this.getNeighbour(Direction.Right).getPlayer() == undefined) {
+                emptyNeighbour = false;
+            }
+        }
+        return emptyNeighbour;
+    }
+
     /**
      * Gets the index of this position.
      * @returns The index of this position.
