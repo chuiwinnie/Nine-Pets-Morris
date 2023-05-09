@@ -57,17 +57,19 @@ export class RemoveTokenAction extends Action {
         }
 
         // check if player is moving their own token from the specified position
-        if (this.movingOwnToken) {
+        if (this.movingOwnToken == true) {
             // check if the token belongs to the player
             if (positionPlayer != playingTeamPlayer) {
                 return false;
+            }
+            else{
+                position.removeToken();
             }
         } else {
             //check if the token belongs to the opponent
             if (positionPlayer != nonPlayingTeamPlayer) {
                 return false;
-            }
-        }
+            }else{
         
 
             // check if the specified token is a part of a mill before it is removed and player is not removing own piece
@@ -89,18 +91,19 @@ export class RemoveTokenAction extends Action {
                 if (allTokenInMill){
                     position.removeToken();
                     // decrement the opponent's number of alive tokens if one is removed
-                this.getBoard().getNonPlayingTeam().removeToken();
+                    this.getBoard().getNonPlayingTeam().removeToken();
                 }
                 else{
                     return false
                 }
             }
-            else{
+            else if (this.movingOwnToken==false && this.getBoard().checkMill(this.positionIndex, false) == false){
                 position.removeToken();
                 // decrement the opponent's number of alive tokens if one is removed
                 this.getBoard().getNonPlayingTeam().removeToken();
             }
-
+        }
+    }
         
         
 
