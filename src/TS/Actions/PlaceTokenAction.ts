@@ -50,7 +50,7 @@ export class PlaceTokenAction extends Action {
     private placeToken(): boolean {
         let position = this.getBoard().getPositions()[this.positionIndex];
         let pickUpPosition = undefined;
-        if (this.pickUpPositionIndex) {
+        if (this.pickUpPositionIndex != undefined) {
             pickUpPosition = this.getBoard().getPositions()[this.pickUpPositionIndex];
         }
         let currentTeam = this.getBoard().getPlayingTeam();
