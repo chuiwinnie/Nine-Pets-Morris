@@ -67,38 +67,41 @@ export class RemoveTokenAction extends Action {
             if (positionPlayer != nonPlayingTeamPlayer) {
                 return false;
             }
-            // decrement the opponent's number of alive tokens if one is removed
-            this.getBoard().getNonPlayingTeam().removeToken();
-        }
+            
+        
 
-        // check if the specified token is a part of a mill before it is removed and player is not removing own piece
-        if (this.getBoard().checkMill(this.positionIndex, false) && this.movingOwnToken==false){
-            console.log("the token is part of the mill")
-            //check if all the token is in part of the mill
-            let allTokenInMill = true;
-            for (let i=0 ; i < this.getBoard().getPositions().length ; i++) {
-                let currentPosition = this.getBoard().getPositions()[i];
-                //check if it is oponent's token
-                if (playingTeamPlayer != currentPosition.getPlayer() && currentPosition.getPlayer()!= undefined) {
-                    allTokenInMill = this.getBoard().checkMill(i, false)
-                    if (!allTokenInMill){
-                        return false
+            // check if the specified token is a part of a mill before it is removed and player is not removing own piece
+            if (this.getBoard().checkMill(this.positionIndex, false) && this.movingOwnToken==false){
+                console.log("the token is part of the mill")
+                //check if all the token is in part of the mill
+                let allTokenInMill = true;
+                for (let i=0 ; i < this.getBoard().getPositions().length ; i++) {
+                    let currentPosition = this.getBoard().getPositions()[i];
+                    //check if it is oponent's token
+                    if (playingTeamPlayer != currentPosition.getPlayer() && currentPosition.getPlayer()!= undefined) {
+                        allTokenInMill = this.getBoard().checkMill(i, false)
+                        if (!allTokenInMill){
+                            return false
+                        }
                     }
                 }
-            }
 
-            if (allTokenInMill){
-                position.removeToken();
+                if (allTokenInMill){
+                    position.removeToken();
+                    // decrement the opponent's number of alive tokens if one is removed
+                this.getBoard().getNonPlayingTeam().removeToken();
+                }
+                else{
+                    return false
+                }
             }
             else{
-                return false
+                position.removeToken();
+                // decrement the opponent's number of alive tokens if one is removed
+                this.getBoard().getNonPlayingTeam().removeToken();
             }
-        }
-        else{
-            position.removeToken();
-        }
 
-
+        }
         
 
         return true;
