@@ -67,7 +67,7 @@ export class RemoveTokenAction extends Action {
             if (positionPlayer != nonPlayingTeamPlayer) {
                 return false;
             }
-            
+        }
         
 
             // check if the specified token is a part of a mill before it is removed and player is not removing own piece
@@ -101,7 +101,7 @@ export class RemoveTokenAction extends Action {
                 this.getBoard().getNonPlayingTeam().removeToken();
             }
 
-        }
+        
         
 
         return true;
