@@ -80,8 +80,10 @@ export class RemoveTokenAction extends Action {
                 let currentPosition = this.getBoard().getPositions()[i];
                 //check if it is oponent's token
                 if (playingTeamPlayer != currentPosition.getPlayer() && currentPosition.getPlayer()!= undefined) {
-                    console.log(playingTeamPlayer, currentPosition.getPlayer())
                     allTokenInMill = this.getBoard().checkMill(i, false)
+                    if (!allTokenInMill){
+                        return false
+                    }
                 }
             }
 
