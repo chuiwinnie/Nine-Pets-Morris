@@ -1,18 +1,11 @@
-stages:
-  - build
-  - deploy
-
-build:
-  stage: build
-  script:
-    - tsc -p tsconfig.json
-  artifacts:
-    paths:
-      - src/
-
-deploy:
+pages:
   stage: deploy
   script:
   - mkdir .public
   - cp -r * .public
   - mv .public public
+  artifacts:
+    paths:
+    - public
+  only:
+  - main
