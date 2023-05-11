@@ -4,11 +4,9 @@ pages:
     stage: publish
     script:
         - tsc -p tsconfig.json
-        - cp ./src/Application.html public
+        
     artifacts:
         paths:
           - public
-    rules:
-      - if: $CI_COMMIT_BRANCH == 'main'
     environment:
         name: production/${CI_PROJECT_NAME}/${CI_COMMIT_REF_NAME}
