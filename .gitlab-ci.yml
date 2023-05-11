@@ -1,12 +1,11 @@
-stages:
-  - publish
 pages:
-    stage: publish
-    script:
-        - tsc -p tsconfig.json
-        
-    artifacts:
-        paths:
-          - public
-    environment:
-        name: production/${CI_PROJECT_NAME}/${CI_COMMIT_REF_NAME}
+  stage: deploy
+  script:
+      - tsc -p tsconfig.json
+  artifacts:
+      paths:
+        - public
+  environment:
+      name: production/${CI_PROJECT_NAME}/${CI_COMMIT_REF_NAME}
+  only:
+    - main
