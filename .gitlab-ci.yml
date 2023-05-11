@@ -1,0 +1,7 @@
+pages:
+  stage: deploy
+  script:
+    - tsc -p tsconfig.json
+  artifacts:
+    paths:
+    - public
