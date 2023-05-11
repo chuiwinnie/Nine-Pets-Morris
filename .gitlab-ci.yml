@@ -1,11 +1,7 @@
-pages:
+deploy:
   stage: deploy
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
-  artifacts:
-    paths:
-    - public
-  only:
-  - main
+    - echo "Deploy to staging server"
+  environment:
+    name: production
+    url: https://git.infotech.monash.edu/fit3077-s1-2023/nine-pets-morris
