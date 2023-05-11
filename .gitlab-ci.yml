@@ -1,4 +1,6 @@
-pages:
+stages:
+  - deploy
+deploy:
   stage: deploy
   script:
       - tsc -p tsconfig.json
