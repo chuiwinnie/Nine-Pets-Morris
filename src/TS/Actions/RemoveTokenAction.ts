@@ -59,7 +59,7 @@ export class RemoveTokenAction extends Action {
             }
 
             // prohibit the token removal if the specified token is stuck
-            if (position.isStuck()) {
+            if (position.isStuck() && (this.getBoard().getPlayingTeam().getNumAliveTokens() > 3)) {
                 return false;
             }
 
