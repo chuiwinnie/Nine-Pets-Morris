@@ -1,7 +1,10 @@
 # FIT3077 Project
 
 ### Application Setup
-Follow the below steps to compile and run the 9MM application.
+Click on the following link to run the 9MM application:
+https://suey147.github.io/9-Pet-s-Morris/
+
+Alternatively, follow the below steps to compile and run the 9MM application.
 
 1. Open new terminal
 2. Open directory into `src`
