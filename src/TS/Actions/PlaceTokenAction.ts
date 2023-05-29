@@ -39,8 +39,9 @@ export class PlaceTokenAction extends Action {
             } else {
                 this.getBoard().switchPlayingTeam();
             }
+            return this.getBoard();
         }
-        return this.getBoard();
+        return undefined;
     }
 
     /**
