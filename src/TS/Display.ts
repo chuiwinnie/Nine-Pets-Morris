@@ -102,7 +102,7 @@ export class Display {
      * @param board The game board to display.
      * @param lastBoard Whether the board to be displayed is the last board/turn of the game.
      */
-    showBoard(board: Board, lastBoard?: boolean): void {
+    showBoard(game: Game, board: Board, lastBoard?: boolean): void {
         const context = this.setUpCanvas();
         this.drawNodes(context);
         this.drawHorizontalLines(context);
@@ -124,7 +124,28 @@ export class Display {
                     break;
             }
         }
+
+        const exitButton = document.getElementById('exit') as HTMLButtonElement;
+        const undoButton = document.getElementById('undo') as HTMLButtonElement;
+
+        exitButton.removeEventListener('click', this.exitButtonClickHandler);
+        undoButton.removeEventListener('click', this.undoButtonClickHandler);
+
+        this.exitButtonClickHandler = () => {
+            game.exit(this);
+          };
+      
+        this.undoButtonClickHandler = () => {
+        game.undo(this);
+        };
+
+        exitButton.addEventListener('click', this.exitButtonClickHandler);
+        undoButton.addEventListener('click', this.undoButtonClickHandler);
+
     }
+
+    private exitButtonClickHandler: () => void = () => { };
+    private undoButtonClickHandler: () => void = () => { };
 
     /**
      * Sets up the canvas to display the game board.
