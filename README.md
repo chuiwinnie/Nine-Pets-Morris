@@ -36,5 +36,12 @@ This folder contains all the Sprint 2 deliverables/documents in a single PDF, in
 1. Architecture
 2. Design Rationales
 
+#### doc/Sprint3
+This folder contains all the Sprint 3 deliverables/documents in a single PDF, including:
+1. Design Rationales
+2. Demonstration Video Link (https://youtu.be/HRHcCw7QSfo)
+3. Sequence Diagrams
+4. Architecture
+
 #### src
 This folder contains all the code for the 9MM aplication.
