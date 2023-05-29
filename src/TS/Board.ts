@@ -42,10 +42,29 @@ export class Board {
      * 
      */
     constructor(teams?: Team[], currentPlayer?: Player, positions?: Position[], gamePhase?: number) {
-        this.teams = teams ?? [new Team(Player.Cat), new Team(Player.Dog)];
+        if (teams) {
+            this.teams = [new Team(Player.Cat, teams[0].getNumUnplacedTokens(), teams[0].getNumAliveTokens()),
+                        new Team(Player.Dog, teams[1].getNumUnplacedTokens(), teams[1].getNumAliveTokens())];
+        } else {
+            this.teams = [new Team(Player.Cat), new Team(Player.Dog)];
+        }
         this.currentPlayer = currentPlayer ?? Player.Cat;
-        this.positions = positions ?? this.setUpPositions();
+        if (positions) {
+            this.positions = this.setPositions(positions);
+        } else {
+            this.positions = this.setUpPositions();
+        }
+        this.joinPositions();
         this.gamePhase = gamePhase ?? 1;
+    }
+
+    private setPositions(positions: Position[]): Position[] {
+        const positionBoard: Position[] = [];
+        for (let i = 0; i < 24; i++) {
+            let currentPosition = positions[i];
+            positionBoard.push(new Position(currentPosition.getPlayer(), i));
+        }
+        return positionBoard;
     }
 
     /**
@@ -57,96 +76,97 @@ export class Board {
         for (let i = 0; i < 24; i++) {
             emptyBoard.push(new Position(undefined, i));
         }
-        
-        emptyBoard[0].setNeighbour(Direction.Right, emptyBoard[1]);
-        emptyBoard[0].setNeighbour(Direction.Down, emptyBoard[9]);
-
-        emptyBoard[1].setNeighbour(Direction.Left, emptyBoard[0]);
-        emptyBoard[1].setNeighbour(Direction.Right, emptyBoard[2]);
-        emptyBoard[1].setNeighbour(Direction.Down, emptyBoard[4]);
-
-        emptyBoard[2].setNeighbour(Direction.Left, emptyBoard[1]);
-        emptyBoard[2].setNeighbour(Direction.Down, emptyBoard[14]);
-
-        emptyBoard[3].setNeighbour(Direction.Right, emptyBoard[4]);
-        emptyBoard[3].setNeighbour(Direction.Down, emptyBoard[10]);
-
-        emptyBoard[4].setNeighbour(Direction.Left, emptyBoard[3]);
-        emptyBoard[4].setNeighbour(Direction.Right, emptyBoard[5]);
-        emptyBoard[4].setNeighbour(Direction.Up, emptyBoard[1]);
-        emptyBoard[4].setNeighbour(Direction.Down, emptyBoard[7]);
-
-        emptyBoard[5].setNeighbour(Direction.Left, emptyBoard[4]);
-        emptyBoard[5].setNeighbour(Direction.Down, emptyBoard[13]);
-
-        emptyBoard[6].setNeighbour(Direction.Right, emptyBoard[7]);
-        emptyBoard[6].setNeighbour(Direction.Down, emptyBoard[11]);
-
-        emptyBoard[7].setNeighbour(Direction.Left, emptyBoard[6]);
-        emptyBoard[7].setNeighbour(Direction.Right, emptyBoard[8]);
-        emptyBoard[7].setNeighbour(Direction.Up, emptyBoard[4]);
-
-        emptyBoard[8].setNeighbour(Direction.Left, emptyBoard[7]);
-        emptyBoard[8].setNeighbour(Direction.Down, emptyBoard[12]);
-
-        emptyBoard[9].setNeighbour(Direction.Up, emptyBoard[0]);
-        emptyBoard[9].setNeighbour(Direction.Right, emptyBoard[10]);
-        emptyBoard[9].setNeighbour(Direction.Down, emptyBoard[21]);
-
-        emptyBoard[10].setNeighbour(Direction.Left, emptyBoard[9]);
-        emptyBoard[10].setNeighbour(Direction.Right, emptyBoard[11]);
-        emptyBoard[10].setNeighbour(Direction.Up, emptyBoard[3]);
-        emptyBoard[10].setNeighbour(Direction.Down, emptyBoard[18]);
-
-        emptyBoard[11].setNeighbour(Direction.Left, emptyBoard[10]);
-        emptyBoard[11].setNeighbour(Direction.Up, emptyBoard[6]);
-        emptyBoard[11].setNeighbour(Direction.Down, emptyBoard[15]);
-
-        emptyBoard[12].setNeighbour(Direction.Up, emptyBoard[8]);
-        emptyBoard[12].setNeighbour(Direction.Right, emptyBoard[13]);
-        emptyBoard[12].setNeighbour(Direction.Down, emptyBoard[17]);
-
-        emptyBoard[13].setNeighbour(Direction.Left, emptyBoard[12]);
-        emptyBoard[13].setNeighbour(Direction.Right, emptyBoard[14]);
-        emptyBoard[13].setNeighbour(Direction.Up, emptyBoard[5]);
-        emptyBoard[13].setNeighbour(Direction.Down, emptyBoard[20]);
-
-        emptyBoard[14].setNeighbour(Direction.Left, emptyBoard[13]);
-        emptyBoard[14].setNeighbour(Direction.Up, emptyBoard[2]);
-        emptyBoard[14].setNeighbour(Direction.Down, emptyBoard[23]);
-
-        emptyBoard[15].setNeighbour(Direction.Up, emptyBoard[11]);
-        emptyBoard[15].setNeighbour(Direction.Right, emptyBoard[16]);
-
-        emptyBoard[16].setNeighbour(Direction.Left, emptyBoard[15]);
-        emptyBoard[16].setNeighbour(Direction.Right, emptyBoard[17]);
-        emptyBoard[16].setNeighbour(Direction.Down, emptyBoard[19]);
-
-        emptyBoard[17].setNeighbour(Direction.Left, emptyBoard[16]);
-        emptyBoard[17].setNeighbour(Direction.Up, emptyBoard[12]);
-
-        emptyBoard[18].setNeighbour(Direction.Up, emptyBoard[10]);
-        emptyBoard[18].setNeighbour(Direction.Right, emptyBoard[19]);
-
-        emptyBoard[19].setNeighbour(Direction.Left, emptyBoard[18]);
-        emptyBoard[19].setNeighbour(Direction.Right, emptyBoard[20]);
-        emptyBoard[19].setNeighbour(Direction.Up, emptyBoard[16]);
-        emptyBoard[19].setNeighbour(Direction.Down, emptyBoard[22]);
-
-        emptyBoard[20].setNeighbour(Direction.Left, emptyBoard[19]);
-        emptyBoard[20].setNeighbour(Direction.Up, emptyBoard[13]);
-
-        emptyBoard[21].setNeighbour(Direction.Up, emptyBoard[9]);
-        emptyBoard[21].setNeighbour(Direction.Right, emptyBoard[22]);
-
-        emptyBoard[22].setNeighbour(Direction.Left, emptyBoard[21]);
-        emptyBoard[22].setNeighbour(Direction.Right, emptyBoard[23]);
-        emptyBoard[22].setNeighbour(Direction.Up, emptyBoard[19]);
-
-        emptyBoard[23].setNeighbour(Direction.Left, emptyBoard[22]);
-        emptyBoard[23].setNeighbour(Direction.Up, emptyBoard[14]);
-
         return emptyBoard;
+    }
+
+    joinPositions() {
+        this.positions[0].setNeighbour(Direction.Right, this.positions[1]);
+        this.positions[0].setNeighbour(Direction.Down, this.positions[9]);
+
+        this.positions[1].setNeighbour(Direction.Left, this.positions[0]);
+        this.positions[1].setNeighbour(Direction.Right, this.positions[2]);
+        this.positions[1].setNeighbour(Direction.Down, this.positions[4]);
+
+        this.positions[2].setNeighbour(Direction.Left, this.positions[1]);
+        this.positions[2].setNeighbour(Direction.Down, this.positions[14]);
+
+        this.positions[3].setNeighbour(Direction.Right, this.positions[4]);
+        this.positions[3].setNeighbour(Direction.Down, this.positions[10]);
+
+        this.positions[4].setNeighbour(Direction.Left, this.positions[3]);
+        this.positions[4].setNeighbour(Direction.Right, this.positions[5]);
+        this.positions[4].setNeighbour(Direction.Up, this.positions[1]);
+        this.positions[4].setNeighbour(Direction.Down, this.positions[7]);
+
+        this.positions[5].setNeighbour(Direction.Left, this.positions[4]);
+        this.positions[5].setNeighbour(Direction.Down, this.positions[13]);
+
+        this.positions[6].setNeighbour(Direction.Right, this.positions[7]);
+        this.positions[6].setNeighbour(Direction.Down, this.positions[11]);
+
+        this.positions[7].setNeighbour(Direction.Left, this.positions[6]);
+        this.positions[7].setNeighbour(Direction.Right, this.positions[8]);
+        this.positions[7].setNeighbour(Direction.Up, this.positions[4]);
+
+        this.positions[8].setNeighbour(Direction.Left, this.positions[7]);
+        this.positions[8].setNeighbour(Direction.Down, this.positions[12]);
+
+        this.positions[9].setNeighbour(Direction.Up, this.positions[0]);
+        this.positions[9].setNeighbour(Direction.Right, this.positions[10]);
+        this.positions[9].setNeighbour(Direction.Down, this.positions[21]);
+
+        this.positions[10].setNeighbour(Direction.Left, this.positions[9]);
+        this.positions[10].setNeighbour(Direction.Right, this.positions[11]);
+        this.positions[10].setNeighbour(Direction.Up, this.positions[3]);
+        this.positions[10].setNeighbour(Direction.Down, this.positions[18]);
+
+        this.positions[11].setNeighbour(Direction.Left, this.positions[10]);
+        this.positions[11].setNeighbour(Direction.Up, this.positions[6]);
+        this.positions[11].setNeighbour(Direction.Down, this.positions[15]);
+
+        this.positions[12].setNeighbour(Direction.Up, this.positions[8]);
+        this.positions[12].setNeighbour(Direction.Right, this.positions[13]);
+        this.positions[12].setNeighbour(Direction.Down, this.positions[17]);
+
+        this.positions[13].setNeighbour(Direction.Left, this.positions[12]);
+        this.positions[13].setNeighbour(Direction.Right, this.positions[14]);
+        this.positions[13].setNeighbour(Direction.Up, this.positions[5]);
+        this.positions[13].setNeighbour(Direction.Down, this.positions[20]);
+
+        this.positions[14].setNeighbour(Direction.Left, this.positions[13]);
+        this.positions[14].setNeighbour(Direction.Up, this.positions[2]);
+        this.positions[14].setNeighbour(Direction.Down, this.positions[23]);
+
+        this.positions[15].setNeighbour(Direction.Up, this.positions[11]);
+        this.positions[15].setNeighbour(Direction.Right, this.positions[16]);
+
+        this.positions[16].setNeighbour(Direction.Left, this.positions[15]);
+        this.positions[16].setNeighbour(Direction.Right, this.positions[17]);
+        this.positions[16].setNeighbour(Direction.Down, this.positions[19]);
+
+        this.positions[17].setNeighbour(Direction.Left, this.positions[16]);
+        this.positions[17].setNeighbour(Direction.Up, this.positions[12]);
+
+        this.positions[18].setNeighbour(Direction.Up, this.positions[10]);
+        this.positions[18].setNeighbour(Direction.Right, this.positions[19]);
+
+        this.positions[19].setNeighbour(Direction.Left, this.positions[18]);
+        this.positions[19].setNeighbour(Direction.Right, this.positions[20]);
+        this.positions[19].setNeighbour(Direction.Up, this.positions[16]);
+        this.positions[19].setNeighbour(Direction.Down, this.positions[22]);
+
+        this.positions[20].setNeighbour(Direction.Left, this.positions[19]);
+        this.positions[20].setNeighbour(Direction.Up, this.positions[13]);
+
+        this.positions[21].setNeighbour(Direction.Up, this.positions[9]);
+        this.positions[21].setNeighbour(Direction.Right, this.positions[22]);
+
+        this.positions[22].setNeighbour(Direction.Left, this.positions[21]);
+        this.positions[22].setNeighbour(Direction.Right, this.positions[23]);
+        this.positions[22].setNeighbour(Direction.Up, this.positions[19]);
+
+        this.positions[23].setNeighbour(Direction.Left, this.positions[22]);
+        this.positions[23].setNeighbour(Direction.Up, this.positions[14]);
     }
 
     /**
@@ -172,6 +192,14 @@ export class Board {
      */
     getTeam(index: number): Team {
         return this.teams[index];
+    }
+    
+    getTeams(): Team[] {
+        return this.teams;
+    }
+
+    getCurrentPlayer(): Player {
+        return this.currentPlayer;
     }
 
     /**
