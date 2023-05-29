@@ -127,10 +127,14 @@ export class Display {
 
         const exitButton = document.getElementById('exit') as HTMLButtonElement;
         const undoButton = document.getElementById('undo') as HTMLButtonElement;
+        const saveButton = document.getElementById('save') as HTMLButtonElement;
 
         exitButton.removeEventListener('click', this.exitButtonClickHandler);
         undoButton.removeEventListener('click', this.undoButtonClickHandler);
-
+        saveButton.removeEventListener('click', this.saveButtonClickHandler);
+        this.saveButtonClickHandler = () => {
+            game.savetoFile(this);
+        };
         this.exitButtonClickHandler = () => {
             game.exit(this);
           };
@@ -141,11 +145,13 @@ export class Display {
 
         exitButton.addEventListener('click', this.exitButtonClickHandler);
         undoButton.addEventListener('click', this.undoButtonClickHandler);
+        saveButton.addEventListener('click', this.saveButtonClickHandler);
 
     }
 
     private exitButtonClickHandler: () => void = () => { };
     private undoButtonClickHandler: () => void = () => { };
+    private saveButtonClickHandler: () => void = () => { };
 
     /**
      * Sets up the canvas to display the game board.
