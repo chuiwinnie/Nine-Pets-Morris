@@ -25,7 +25,9 @@ export class Game {
      */
     constructor(boardHistory: Board[], currentBoard?: Board) {
         this.boardHistory = boardHistory;
-        this.currentBoard = currentBoard ?? boardHistory[boardHistory.length - 1];
+        let topBoard = this.boardHistory[this.boardHistory.length - 1];
+        topBoard = new Board(topBoard.getTeams(), topBoard.getCurrentPlayer(), topBoard.getPositions(), topBoard.getGamePhase())
+        this.currentBoard = currentBoard ?? topBoard;
     }
 
     /**
@@ -33,7 +35,7 @@ export class Game {
      * @param display The Display object used to show the game.
      */
     run(display: Display): void {
-        display.showBoard(this.currentBoard);
+        display.showBoard(this, this.currentBoard);
     }
 
     /**
@@ -47,14 +49,13 @@ export class Game {
             this.undo(display);
         } else {
             this.performAction(index);
-            this.boardHistory.push(this.currentBoard);
         }
 
         if (this.checkVictory(this.currentBoard) && this.currentBoard.getGamePhase()!=1) {
-            display.showBoard(this.currentBoard, true);
+            display.showBoard(this, this.currentBoard, true);
             display.showVictory(this.currentBoard.getNonPlayingTeam().getPlayer());
         } else {
-            display.showBoard(this.currentBoard);
+            display.showBoard(this, this.currentBoard);
         }
     }
 
@@ -70,7 +71,7 @@ export class Game {
                 let moveTokenAction = new RemoveTokenAction(this.currentBoard, index, true);
                 updatedBoard = moveTokenAction.execute();
                 if (updatedBoard) {
-                    this.currentBoard = updatedBoard;
+                    this.updateBoard();
                 }
                 break;
             // place token
@@ -78,7 +79,9 @@ export class Game {
                 if (index != this.currentBoard.getPickUpPositionIndex()) {
                     let placeTokenAction = new PlaceTokenAction(this.currentBoard, index, this.currentBoard.getPickUpPositionIndex());
                     updatedBoard = placeTokenAction.execute();
-                    this.currentBoard = updatedBoard;
+                    if (updatedBoard) {
+                        this.updateBoard();
+                    }
                 }
                 break;
             // remove token
@@ -86,13 +89,18 @@ export class Game {
                 let removeTokenAction = new RemoveTokenAction(this.currentBoard, index, false);
                 updatedBoard = removeTokenAction.execute();
                 if (updatedBoard) {
-                    this.currentBoard = updatedBoard;
                     this.currentBoard.switchPlayingTeam();
+                    this.updateBoard();
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    private updateBoard(): void {
+        this.boardHistory.push(this.currentBoard);
+        this.currentBoard = new Board(this.currentBoard.getTeams(), this.currentBoard.getCurrentPlayer(), this.currentBoard.getPositions(), this.currentBoard.getGamePhase());
     }
 
     /**
@@ -101,9 +109,15 @@ export class Game {
      * @param gameIndex The index of the currently playing game.
      */
     undo(display: Display): void {
-        this.boardHistory.pop();
-        this.currentBoard = this.boardHistory[this.boardHistory.length - 1];
-        display.showBoard(this.currentBoard);
+        if (this.boardHistory.length > 1) {
+            let topBoard = this.boardHistory[this.boardHistory.length - 1];
+            this.currentBoard = new Board(topBoard.getTeams(), topBoard.getCurrentPlayer(), topBoard.getPositions(), topBoard.getGamePhase());
+        }
+        display.showBoard(this, this.currentBoard);
+    }
+
+    exit(display: Display): void {
+        console.log("Exit Game")
     }
 
     /**
