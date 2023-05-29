@@ -85,7 +85,9 @@ export class Application {
     /**
      * Loads games from a TXT file.
      */
-    loadFromFile(): void { }
+    loadFromFile(): void {
+
+    }
 
     /**
      * Exits the current game.

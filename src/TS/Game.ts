@@ -2,7 +2,7 @@ import { Board } from "./Board.js"
 import { Display } from "./Display.js";
 import { PlaceTokenAction } from "./Actions/PlaceTokenAction.js"
 import { RemoveTokenAction } from "./Actions/RemoveTokenAction.js"
-
+import fs from 'fs';
 
 /**
  * Implement a game and allows the game to be played.
@@ -121,6 +121,18 @@ export class Game {
         console.log("Exit Game")
     }
 
+    savetoFile(display:Display):void{
+        const jsonContent = JSON.stringify(this.boardHistory.map((board) => board.toJSON()));
+        const blob = new Blob([jsonContent], {type: 'application/json'});
+
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'data.json';
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
     /**
      * Checks if a victory condition of the game has been met.
      * @param currentBoard The board representing the current game state/turn.

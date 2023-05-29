@@ -276,4 +276,14 @@ export class Board {
         this.positions[index].updateMillCounterOrientation(millOrientation, tokenAdded);
         return (millOrientation != undefined);
     }
+
+    toJSON(): any {
+        return {
+          teams: this.getTeams(),
+          currentPlayer: this.getCurrentPlayer(),
+          positions: this.getPositions().map((position) => position.toJSON()),
+          gamePhase: this.getGamePhase(),
+          pickUpPositionIndex: this.getPickUpPositionIndex(),
+        };
+    }
 }

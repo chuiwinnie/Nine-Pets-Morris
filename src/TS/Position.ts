@@ -276,4 +276,10 @@ export class Position {
             this.millCounter -= 1;
         }
     }
+
+    toJSON(): any {
+        return {
+          player: this.getPlayer(),
+        };
+    }
 }
