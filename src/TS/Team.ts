@@ -24,10 +24,10 @@ export class Team {
      * Constructs a Team object.
      * @param player The player associated with this team.
      */
-    constructor(player: Player) {
+    constructor(player: Player, numUnplacedTokens?: number, numAliveTokens?: number) {
         this.player = player;
-        this.numUnplacedTokens = 9;
-        this.numAliveTokens = 9;
+        this.numUnplacedTokens = numUnplacedTokens ?? 9;
+        this.numAliveTokens = numAliveTokens ?? 9;
     }
 
     /**
