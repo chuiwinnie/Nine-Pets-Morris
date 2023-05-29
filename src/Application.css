@@ -21,3 +21,15 @@ img.currentTurnImage {
     float: left;
     padding-top: 10px;
 }
+
+.exit {
+    float: left;
+    width: 100px;
+    height: 50px;
+}
+
+.undo {
+    float: right;
+    width: 100px;
+    height: 50px;
+}
