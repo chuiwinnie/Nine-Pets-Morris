@@ -110,6 +110,7 @@ export class Game {
      */
     undo(display: Display): void {
         if (this.boardHistory.length > 1) {
+            this.boardHistory.pop();
             let topBoard = this.boardHistory[this.boardHistory.length - 1];
             this.currentBoard = new Board(topBoard.getTeams(), topBoard.getCurrentPlayer(), topBoard.getPositions(), topBoard.getGamePhase());
         }
