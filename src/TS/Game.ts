@@ -2,7 +2,7 @@ import { Board } from "./Board.js"
 import { Display } from "./Display.js";
 import { PlaceTokenAction } from "./Actions/PlaceTokenAction.js"
 import { RemoveTokenAction } from "./Actions/RemoveTokenAction.js"
-import fs from 'fs';
+
 
 /**
  * Implement a game and allows the game to be played.
@@ -120,18 +120,36 @@ export class Game {
     exit(display: Display): void {
         console.log("Exit Game")
     }
+    async savetoFile(display:Display):Promise<void>{
+        console.log("client execute request")
+        const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
+        const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
+        const requestBody = boardStrings.join('\n')+ '\n';;
+        //const jsonContent = JSON.stringify(boardHistoryData);
+        console.log(requestBody)
+        const response = await fetch('http://localhost:3000/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'text/plain',
+            },
+            body: requestBody,
+          });
+        
+          if (response.ok) {
+            console.log('Data saved successfully');
+          } else {
+            console.error('Error saving data:', response.status);
+          }
+        
+        // const blob = new Blob([jsonContent], {type: 'application/json'});
 
-    savetoFile(display:Display):void{
-        const jsonContent = JSON.stringify(this.boardHistory.map((board) => board.toJSON()));
-        const blob = new Blob([jsonContent], {type: 'application/json'});
+        // const link = document.createElement('a');
+        // link.href = URL.createObjectURL(blob);
+        // link.download = 'data.json';
 
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'data.json';
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // document.body.appendChild(link);
+        // link.click();
+        // document.body.removeChild(link);
     }
     /**
      * Checks if a victory condition of the game has been met.
