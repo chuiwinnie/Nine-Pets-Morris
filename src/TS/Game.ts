@@ -119,12 +119,21 @@ export class Game {
 
     exit(display: Display): void {
         console.log("Exit Game")
+        const shouldSaveGame = confirm('Do you want to save the game?');
+        if (shouldSaveGame) {
+          // Call the save game function
+            const gameName = prompt('Enter the game name:');
+            if (gameName) {
+                this.savetoFile(gameName);
+            }
+        }
     }
-    async savetoFile(display:Display):Promise<void>{
+    async savetoFile(gameName: String):Promise<void>{
         console.log("client execute request")
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
-        const requestBody = boardStrings.join('\n')+ '\n';;
+        const requestBody = boardStrings.join('\n')+ '\n';
+        const newRequestBody = gameName+ '\n' + requestBody
         //const jsonContent = JSON.stringify(boardHistoryData);
         console.log(requestBody)
         const response = await fetch('http://localhost:3000/save', {
@@ -132,7 +141,7 @@ export class Game {
             headers: {
               'Content-Type': 'text/plain',
             },
-            body: requestBody,
+            body: newRequestBody,
           });
         
           if (response.ok) {
