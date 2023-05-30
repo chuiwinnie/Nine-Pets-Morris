@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
-    "module": "es6",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "target": "es6",
     "outDir": "out"
-  }
+  },
+  "include": [
+    "TS/**/*.ts",
+    "server.ts"  ],
 }
