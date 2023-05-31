@@ -21,13 +21,13 @@ app.get('/Application.css', (req, res) => {
   res.sendFile(path.join(__dirname, '../Application.css'));
 });
 
-
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../menu.html'));
-});
-app.get('/application.html', (req, res) => {
   res.sendFile(path.join(__dirname, '../Application.html'));
 });
+app.get('/menu', (req, res) => {
+  res.sendFile(path.join(__dirname, '../menu.html'));
+});
+
 
 
 

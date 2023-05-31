@@ -128,7 +128,7 @@ export class Game {
             }
         }
 
-        window.location.href = '../../menu.html';
+        window.location.href = '/menu';
     }
     async savetoFile(gameName: String):Promise<void>{
         console.log("client execute request")
