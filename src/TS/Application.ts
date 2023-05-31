@@ -1,6 +1,8 @@
 import { Game } from "./Game.js"
 import { Display } from "./Display.js";
 import { Board } from "./Board.js";
+import { Team } from "./Team.js";
+import { Position } from "./Position.js";
 
 
 /**
@@ -86,7 +88,38 @@ export class Application {
      * Loads games from a TXT file.
      */
     loadFromFile(): void {
-
+        fetch('/load')
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(game => {
+                const gameName = game.name;
+                const gameData = JSON.parse(game.data);
+                
+                console.log('Game Name:', gameName);
+                console.log('Game Data:', gameData);
+                const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
+                    if (teamData) {
+                      return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
+                    } else {
+                      return new Team(0, 9, 9);
+                    }
+                }) : [];
+                const loadedCurrentPlayer = gameData.currentPlayer;
+                const loadedgamePhase = gameData.gamePhase;
+                const loadedPosition: Position[] = gameData.positions ? gameData.positions.map((positionData, index) => {
+                    const player = positionData.player !== undefined && positionData.player !== '' ? positionData.player : undefined;
+                    return new Position(player, index);}
+                ): [];
+                const loadedBoard = new Board(loadedTeams,loadedCurrentPlayer, loadedPosition, loadedgamePhase);
+                const loadedGame = new Game([loadedBoard],loadedBoard);
+                
+                this.gameList.push(loadedGame);
+                this.display.showGameList(this.gameList);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading game data:', error);
+        });
     }
 
     /**
