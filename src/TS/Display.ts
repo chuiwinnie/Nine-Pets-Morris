@@ -95,7 +95,7 @@ export class Display {
         startButton.removeEventListener('click', this.startButtonClickHandler);
 
         this.startButtonClickHandler = () => {
-            window.location.href = '../../Application.html';
+            window.location.href = '/';
             app.startNewGame();
         };
 

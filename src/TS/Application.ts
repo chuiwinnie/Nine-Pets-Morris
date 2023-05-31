@@ -115,6 +115,7 @@ export class Application {
                 
                 this.gameList.push(loadedGame);
                 this.display.showGameList(this.gameList);
+                this.display.showMainMenu(this);
             });
         })
         .catch(error => {
@@ -127,9 +128,30 @@ export class Application {
      * @param gameIndex The index of the current game
      */
     exit(gameIndex: number): void { }
+
+
+
+    handleMenuPageLoad() {
+        // Code for handling menu page load
+        this.loadFromFile();
+    }
+      
+    handleApplicationPageLoad() {
+        this.startNewGame();
+    }
+      
 }
 
 
 // This application currently can only start new games (Sprint 1).
 const application = Application.getInstance();
-application.startNewGame();
+// application.startNewGame();
+// Get the current URL
+const currentURL = window.location.href;
+    
+// Check if the current URL matches the menu page URL
+if (currentURL.includes("/menu")) {
+    application.handleMenuPageLoad();
+}else if (currentURL.includes("/")) {
+    application.handleApplicationPageLoad();
+}
