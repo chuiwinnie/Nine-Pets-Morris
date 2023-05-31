@@ -11,6 +11,9 @@ Alternatively, follow the below steps to compile and run the 9MM application.
 3. Run `tsc -p tsconfig.json`
 4. Run Application.html as live server
 
+# with node server
+3. Run `npm start`
+4. open browser 'http://localhost:3000'
 ---
 
 ### Team Information
