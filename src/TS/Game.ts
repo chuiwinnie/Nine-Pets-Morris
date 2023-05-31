@@ -127,6 +127,8 @@ export class Game {
                 this.savetoFile(gameName);
             }
         }
+
+        window.location.href = '../../menu.html';
     }
     async savetoFile(gameName: String):Promise<void>{
         console.log("client execute request")

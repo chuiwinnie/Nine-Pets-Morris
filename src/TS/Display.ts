@@ -89,13 +89,34 @@ export class Display {
     /**
      * Shows the main menu.
      */
-    showMainMenu(): void { }
+    showMainMenu(app:Application): void {
+        const startButton = document.getElementById('newGame') as HTMLButtonElement;
+
+        startButton.removeEventListener('click', this.startButtonClickHandler);
+
+        this.startButtonClickHandler = () => {
+            window.location.href = '../../Application.html';
+            app.startNewGame();
+        };
+
+        startButton.addEventListener('click', this.startButtonClickHandler);
+    }
 
     /**
      * Shows the list of all previous games.
      * @param gameList The list of games to display.
      */
-    showGameList(gameList: Game[]): void { }
+    showGameList(gameList: Game[]): void {
+        const gameListElement = document.getElementById('gameList');
+
+        gameListElement.innerHTML = '';
+
+        gameList.forEach((gameName, index) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = index.toString();
+            gameListElement.appendChild(listItem);
+        });
+    }
 
     /**
      * Shows the game board.
@@ -127,14 +148,9 @@ export class Display {
 
         const exitButton = document.getElementById('exit') as HTMLButtonElement;
         const undoButton = document.getElementById('undo') as HTMLButtonElement;
-        // const saveButton = document.getElementById('save') as HTMLButtonElement;
 
         exitButton.removeEventListener('click', this.exitButtonClickHandler);
         undoButton.removeEventListener('click', this.undoButtonClickHandler);
-        // saveButton.removeEventListener('click', this.saveButtonClickHandler);
-        // this.saveButtonClickHandler = () => {
-        //     game.savetoFile(this);
-        // };
         this.exitButtonClickHandler = () => {
             game.exit(this);
           };
@@ -145,13 +161,12 @@ export class Display {
 
         exitButton.addEventListener('click', this.exitButtonClickHandler);
         undoButton.addEventListener('click', this.undoButtonClickHandler);
-        // saveButton.addEventListener('click', this.saveButtonClickHandler);
 
     }
 
     private exitButtonClickHandler: () => void = () => { };
     private undoButtonClickHandler: () => void = () => { };
-    // private saveButtonClickHandler: () => void = () => { };
+    private startButtonClickHandler: () => void = () => { };
 
     /**
      * Sets up the canvas to display the game board.
