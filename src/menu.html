@@ -11,10 +11,7 @@
 </head>
 
 <body background="assets/background.png">
-  <h1 style="text-align: center; font-size: 5vh; line-height: 0.8;">
-    <button id="newGame" class="newGame">Start</button>
-    Nine Pets' Morris
-  </h1>
+  <br>
 
   <div class="row" style="text-align: center;">
 
@@ -22,6 +19,11 @@
       <img class="cat" src="assets/cat.png">
     </div>
 
+    <div class="column">
+      <h1 style="text-align: center; font-size: 5vh; line-height: 0.8;">
+        Nine Pets' Morris
+      </h1>
+    </div>
 
     <div class="column">
       <img class="dog" src="assets/dog.png">
@@ -29,9 +31,22 @@
 
   </div>
 
-  <div style="text-align: center ; position:relative; top:-40px;">
-    <ul id="gameList"></ul>
+  <br>
 
+  <h2 style="text-align: center;">
+    Start a new game, or continue playing one of the following games.
+  </h2>
+
+  <br>
+
+  <div class="wrapper">
+    <button id="newGame" class="newGame">Start New Game</button>
+  </div>
+
+  <br>
+  
+  <div class="wrapper">
+    <ul id="gameList" style="font-size: 20px; padding-left: 0;">No previous games available, please start a new game.</ul>
   </div>
 
   <script>var exports = {};</script>
