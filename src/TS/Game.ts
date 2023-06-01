@@ -31,6 +31,14 @@ export class Game {
     }
 
     /**
+     * Gets the board history of the game.
+     * @returns The array of all previous boards of the game.
+     */
+    getBoardHistory() {
+        return this.boardHistory;
+    }
+
+    /**
      * Runs the game and updates the display continuosly until a victory condition is met.
      * @param display The Display object used to show the game.
      */

@@ -149,6 +149,13 @@ export class Display {
         const exitButton = document.getElementById('exit') as HTMLButtonElement;
         const undoButton = document.getElementById('undo') as HTMLButtonElement;
 
+        // disable the undo button if no previous moves available
+        if (game.getBoardHistory().length > 1) {
+            undoButton.disabled = false;
+        } else {
+            undoButton.disabled = true;
+        }
+
         exitButton.removeEventListener('click', this.exitButtonClickHandler);
         undoButton.removeEventListener('click', this.undoButtonClickHandler);
 
