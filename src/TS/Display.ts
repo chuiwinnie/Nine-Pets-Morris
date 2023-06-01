@@ -89,7 +89,7 @@ export class Display {
     /**
      * Shows the main menu.
      */
-    showMainMenu(app:Application): void {
+    showMainMenu(app: Application): void {
         const startButton = document.getElementById('newGame') as HTMLButtonElement;
 
         startButton.removeEventListener('click', this.startButtonClickHandler);
@@ -151,12 +151,13 @@ export class Display {
 
         exitButton.removeEventListener('click', this.exitButtonClickHandler);
         undoButton.removeEventListener('click', this.undoButtonClickHandler);
+
         this.exitButtonClickHandler = () => {
-            game.exit(this);
-          };
-      
+            game.exit();
+        };
+
         this.undoButtonClickHandler = () => {
-        game.undo(this);
+            game.undo(this);
         };
 
         exitButton.addEventListener('click', this.exitButtonClickHandler);

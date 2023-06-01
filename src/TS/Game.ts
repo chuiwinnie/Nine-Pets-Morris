@@ -51,7 +51,7 @@ export class Game {
             this.performAction(index);
         }
 
-        if (this.checkVictory(this.currentBoard) && this.currentBoard.getGamePhase()!=1) {
+        if (this.checkVictory(this.currentBoard) && this.currentBoard.getGamePhase() != 1) {
             display.showBoard(this, this.currentBoard, true);
             display.showVictory(this.currentBoard.getNonPlayingTeam().getPlayer());
         } else {
@@ -117,41 +117,45 @@ export class Game {
         display.showBoard(this, this.currentBoard);
     }
 
-    exit(display: Display): void {
-        console.log("Exit Game")
+    /**
+     * Exits the current game.
+     */
+    exit(): void {
         const shouldSaveGame = confirm('Do you want to save the game?');
+
         if (shouldSaveGame) {
-          // Call the save game function
+            // save the current game before exiting
             const gameName = prompt('Enter the game name:');
             if (gameName) {
-                this.savetoFile(gameName);
+                this.saveToFile(gameName);
             }
         }
 
-        window.location.href = '/menu';
+        window.location.href = '/src/menu.html';
     }
-    async savetoFile(gameName: String):Promise<void>{
-        console.log("client execute request")
+
+    async saveToFile(gameName: String): Promise<void> {
+        console.log("Client executes request")
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
-        const requestBody = boardStrings.join('\n')+ '\n';
-        const newRequestBody = gameName+ '\n' + requestBody
+        const requestBody = boardStrings.join('\n') + '\n';
+        const newRequestBody = gameName + '\n' + requestBody
         //const jsonContent = JSON.stringify(boardHistoryData);
         console.log(requestBody)
         const response = await fetch('http://localhost:3000/save', {
             method: 'POST',
             headers: {
-              'Content-Type': 'text/plain',
+                'Content-Type': 'text/plain',
             },
             body: newRequestBody,
-          });
-        
-          if (response.ok) {
+        });
+
+        if (response.ok) {
             console.log('Data saved successfully');
-          } else {
+        } else {
             console.error('Error saving data:', response.status);
-          }
-        
+        }
+
         // const blob = new Blob([jsonContent], {type: 'application/json'});
 
         // const link = document.createElement('a');
@@ -162,6 +166,7 @@ export class Game {
         // link.click();
         // document.body.removeChild(link);
     }
+
     /**
      * Checks if a victory condition of the game has been met.
      * @param currentBoard The board representing the current game state/turn.
@@ -181,7 +186,7 @@ export class Game {
         }
 
         let unableToMove = true;
-        for (let i=0 ; i < this.currentBoard.getPositions().length ; i++) {
+        for (let i = 0; i < this.currentBoard.getPositions().length; i++) {
             let currentPosition = this.currentBoard.getPositions()[i];
             // current team is still in the game if it has at least 1 position that is not stuck
             if (currentPosition.getPlayer() == this.currentBoard.getPlayingTeam().getPlayer() && !currentPosition.isStuck()) {
@@ -189,7 +194,7 @@ export class Game {
                 break;
             }
         }
-        
+
         return unableToMove;
     }
 }
