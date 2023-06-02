@@ -6,7 +6,7 @@ https://suey147.github.io/9-Pet-s-Morris/
 
 Alternatively, follow the steps below to compile and run the 9MM application.
 
-1. Open new terminal
+1. Open a new terminal
 2. Open directory into `src`
 3. Run `tsc -p tsconfig.json`
 4. Run Application.html as live server
@@ -14,8 +14,9 @@ Alternatively, follow the steps below to compile and run the 9MM application.
 ### Application Setup with Node Server
 Follow the steps below to run the 9MM application with the advanced requirement of undoing moves, saving and loading previous games.
 
-1. Open new terminal
-2. Run `npm start`
+1. Open a new terminal
+2. Open directory into `src`
+3. Run `npm start`
 4. Click on the following link: http://localhost:3000
 
 ---
