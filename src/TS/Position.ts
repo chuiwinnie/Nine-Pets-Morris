@@ -229,7 +229,7 @@ export class Position {
      * @param orientation The orientation of neighbour positions to update the mill counter in.
      * @param millAdded Indicates whether a mill is added in this position.
      */
-    updateMillCounterOrientation(orientation: Orientation, millAdded: boolean) {
+    updateMillCounterOrientation(orientation: Orientation, millAdded: boolean): void {
         this.updateMillCounter(millAdded);
         switch (orientation) {
             case Orientation.Vertical:
@@ -256,7 +256,7 @@ export class Position {
      * @param direction The direction of neighbour positions to update the mill counter in.
      * @param millAdded Indicates whether a mill is added in this position.
      */
-    private updateMillCounterDirection(direction: Direction, millAdded: boolean) {
+    private updateMillCounterDirection(direction: Direction, millAdded: boolean): void {
         let neighbour = this.getNeighbour(direction);
         if (neighbour) {
             neighbour.updateMillCounter(millAdded);
@@ -269,7 +269,7 @@ export class Position {
      * Updates the mill counter of this position.
      * @param millAdded Indicates whether a mill is added in this position.
      */
-    private updateMillCounter(millAdded: boolean) {
+    private updateMillCounter(millAdded: boolean): void {
         if (millAdded) {
             this.millCounter += 1;
         } else {
@@ -277,9 +277,13 @@ export class Position {
         }
     }
 
+    /**
+     * TODO
+     * @returns 
+     */
     toJSON(): any {
         return {
-          player: this.getPlayer(),
+            player: this.getPlayer(),
         };
     }
 }

@@ -44,7 +44,7 @@ export class Board {
     constructor(teams?: Team[], currentPlayer?: Player, positions?: Position[], gamePhase?: number) {
         if (teams) {
             this.teams = [new Team(Player.Cat, teams[0].getNumUnplacedTokens(), teams[0].getNumAliveTokens()),
-                        new Team(Player.Dog, teams[1].getNumUnplacedTokens(), teams[1].getNumAliveTokens())];
+            new Team(Player.Dog, teams[1].getNumUnplacedTokens(), teams[1].getNumAliveTokens())];
         } else {
             this.teams = [new Team(Player.Cat), new Team(Player.Dog)];
         }
@@ -58,6 +58,11 @@ export class Board {
         this.gamePhase = gamePhase ?? 1;
     }
 
+    /**
+     * TODO
+     * @param positions 
+     * @returns 
+     */
     private setPositions(positions: Position[]): Position[] {
         const positionBoard: Position[] = [];
         for (let i = 0; i < 24; i++) {
@@ -79,7 +84,10 @@ export class Board {
         return emptyBoard;
     }
 
-    joinPositions() {
+    /**
+     * TODO
+     */
+    private joinPositions(): void {
         this.positions[0].setNeighbour(Direction.Right, this.positions[1]);
         this.positions[0].setNeighbour(Direction.Down, this.positions[9]);
 
@@ -193,11 +201,19 @@ export class Board {
     getTeam(index: number): Team {
         return this.teams[index];
     }
-    
+
+    /**
+     * TODO
+     * @returns 
+     */
     getTeams(): Team[] {
         return this.teams;
     }
 
+    /**
+     * TODO
+     * @returns 
+     */
     getCurrentPlayer(): Player {
         return this.currentPlayer;
     }
@@ -277,13 +293,17 @@ export class Board {
         return (millOrientation != undefined);
     }
 
+    /**
+     * TODO
+     * @returns 
+     */
     toJSON(): any {
         return {
-          teams: this.getTeams(),
-          currentPlayer: this.getCurrentPlayer(),
-          positions: this.getPositions().map((position) => position.toJSON()),
-          gamePhase: this.getGamePhase(),
-          pickUpPositionIndex: this.getPickUpPositionIndex(),
+            teams: this.getTeams(),
+            currentPlayer: this.getCurrentPlayer(),
+            positions: this.getPositions().map((position) => position.toJSON()),
+            gamePhase: this.getGamePhase(),
+            pickUpPositionIndex: this.getPickUpPositionIndex(),
         };
     }
 }
