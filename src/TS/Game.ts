@@ -139,7 +139,7 @@ export class Game {
             }
         }
 
-        window.location.href = '/src/menu.html';
+        window.location.href = '/menu';
     }
 
     async saveToFile(gameName: String): Promise<void> {
