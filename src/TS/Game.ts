@@ -120,6 +120,9 @@ export class Game {
         }
     }
 
+    /**
+     * Adds the latest board to the board history and updates the current board.
+     */
     private updateBoard(): void {
         this.boardHistory.push(this.currentBoard);
         this.currentBoard = new Board(this.currentBoard.getTeams(), this.currentBoard.getCurrentPlayer(), this.currentBoard.getPositions(), this.currentBoard.getGamePhase());
@@ -140,7 +143,7 @@ export class Game {
     }
 
     /**
-     * Exits the current game.
+     * Exits the game.
      */
     exit(): void {
         const shouldSaveGame = confirm('Do you want to save the game?');
@@ -166,14 +169,19 @@ export class Game {
         }
     }
 
+    /**
+     * Saves the game to the data file.
+     * @param gameName The name of the game.
+     */
     async saveToFile(gameName: String): Promise<void> {
         console.log("Client executes request")
+
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
         const requestBody = boardStrings.join('\n') + '\n';
-        const newRequestBody = gameName + '\n' + requestBody
-        //const jsonContent = JSON.stringify(boardHistoryData);
+        const newRequestBody = gameName + '\n' + requestBody;
         console.log(requestBody)
+        
         const response = await fetch('http://localhost:3000/save', {
             method: 'POST',
             headers: {
@@ -187,16 +195,6 @@ export class Game {
         } else {
             console.error('Error saving data:', response.status);
         }
-
-        // const blob = new Blob([jsonContent], {type: 'application/json'});
-
-        // const link = document.createElement('a');
-        // link.href = URL.createObjectURL(blob);
-        // link.download = 'data.json';
-
-        // document.body.appendChild(link);
-        // link.click();
-        // document.body.removeChild(link);
     }
 
     /**
