@@ -19,15 +19,21 @@ export class Game {
     private currentBoard: Board;
 
     /**
+     * The name of the game.
+     */
+    private name: String;
+
+    /**
      * Contructs a game with the specified board history.
      * @param boardHistory An array of previous boards.
      * @param currentBoard The current board of the game.
      */
-    constructor(boardHistory: Board[], currentBoard?: Board) {
+    constructor(boardHistory: Board[], currentBoard?: Board, name?: String) {
         this.boardHistory = boardHistory;
         let topBoard = this.boardHistory[this.boardHistory.length - 1];
         topBoard = new Board(topBoard.getTeams(), topBoard.getCurrentPlayer(), topBoard.getPositions(), topBoard.getGamePhase())
         this.currentBoard = currentBoard ?? topBoard;
+        this.name = name
     }
 
     /**
@@ -36,6 +42,14 @@ export class Game {
      */
     getBoardHistory() {
         return this.boardHistory;
+    }
+
+    /**
+     * Gets the name of the game.
+     * @returns The game name.
+     */
+    getName() {
+        return this.name
     }
 
     /**
@@ -133,13 +147,23 @@ export class Game {
 
         if (shouldSaveGame) {
             // save the current game before exiting
-            const gameName = prompt('Enter the game name:');
-            if (gameName) {
+            var gameName = prompt('Enter the game name:');
+            
+            while (gameName != null && gameName.length == 0) {
+                alert("Please enter a game name.")
+                gameName = prompt('Enter the game name:');
+            }
+
+            if (gameName != null) {
                 this.saveToFile(gameName);
+                window.location.href = '/menu';
+            }
+        } else {
+            const confirmExit = confirm('Are you sure you want to exit the game without saving it?');
+            if (confirmExit) {
+                window.location.href = '/menu';
             }
         }
-
-        window.location.href = '/menu';
     }
 
     async saveToFile(gameName: String): Promise<void> {
