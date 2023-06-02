@@ -29,7 +29,19 @@ img.currentTurnImage {
     height: 50px;
     font-size: 20px;
     font-weight: bold;
-    background-color: rgb(255, 55, 55);
+    background-color: rgb(252, 65, 65);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.save {
+    float: left;
+    margin-left: 50px;
+    width: 100px;
+    height: 50px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: rgb(66, 240, 98);
     border-radius: 12px;
     cursor: pointer;
 }
