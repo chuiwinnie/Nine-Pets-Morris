@@ -75,7 +75,7 @@ app.get('/load', (req, res) => {
             currentGame = { name: gameEntry.trim(), data: '' };
           } else {
             // Continue existing game entry
-            currentGame.data = gameEntry;
+            currentGame.data += gameEntry;
           }
         }
 

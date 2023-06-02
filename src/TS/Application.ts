@@ -103,25 +103,30 @@ export class Application {
             .then(data => {
                 data.forEach(game => {
                     const gameName = game.name;
-                    const gameData = JSON.parse(game.data);
-
-                    const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
-                        if (teamData) {
-                            return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
-                        } else {
-                            return new Team(0, 9, 9);
+                    const boards= game.data.split('\r');
+                    const boardHist: Board[] = [];
+                    boards.forEach(board => {
+                        if (board.trim() === '') return;
+                        const gameData = JSON.parse(board);
+    
+                        const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
+                            if (teamData) {
+                                return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
+                            } else {
+                                return new Team(0, 9, 9);
+                            }
+                        }) : [];
+                        const loadedCurrentPlayer = gameData.currentPlayer;
+                        const loadedgamePhase = gameData.gamePhase;
+                        const loadedPosition: Position[] = gameData.positions ? gameData.positions.map((positionData, index) => {
+                            const player = positionData.player !== undefined && positionData.player !== '' ? positionData.player : undefined;
+                            return new Position(player, index);
                         }
-                    }) : [];
-                    const loadedCurrentPlayer = gameData.currentPlayer;
-                    const loadedgamePhase = gameData.gamePhase;
-                    const loadedPosition: Position[] = gameData.positions ? gameData.positions.map((positionData, index) => {
-                        const player = positionData.player !== undefined && positionData.player !== '' ? positionData.player : undefined;
-                        return new Position(player, index);
-                    }
-                    ) : [];
-                    const loadedBoard = new Board(loadedTeams, loadedCurrentPlayer, loadedPosition, loadedgamePhase);
-                    const loadedGame = new Game([loadedBoard], loadedBoard, gameName);
-
+                        ) : [];
+                        const loadedBoard = new Board(loadedTeams, loadedCurrentPlayer, loadedPosition, loadedgamePhase);
+                        boardHist.push(loadedBoard)
+                    });
+                    const loadedGame = new Game(boardHist, boardHist[-1], gameName);
                     this.gameList.push(loadedGame);
                 });
 
