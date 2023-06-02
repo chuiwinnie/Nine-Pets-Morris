@@ -94,6 +94,10 @@ export class Display {
         const gameListElement = document.getElementById('gameList');
         gameListElement.innerHTML = "";
 
+        if (gameList.length == 0) {
+            gameListElement.innerHTML = "No previous games available, please start a new game.";
+        }
+
         // display each saved game in a list
         gameList.forEach((game, index) => {
             gameListElement.innerHTML += `<li id="${index}">` + game.getName() + `</li>`;
