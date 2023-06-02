@@ -337,12 +337,21 @@ export class Display {
             undoButton.disabled = true;
         }
 
-        exitButton.removeEventListener('click', function () { game.exit(); });
-        exitButton.addEventListener('click', function () { game.exit(); });
+        exitButton.removeEventListener('click', this.exitButtonClickHandler);
+        this.exitButtonClickHandler = () => {
+            game.exit();
+        };
+        exitButton.addEventListener('click', this.exitButtonClickHandler);
 
-        undoButton.removeEventListener('click', function () { game.undo(Display.getInstance()); });
-        undoButton.addEventListener('click', function () { game.undo(Display.getInstance()); })
+        undoButton.removeEventListener('click', this.undoButtonClickHandler);
+        this.undoButtonClickHandler = () => {
+            game.undo(this);
+        };
+        undoButton.addEventListener('click', this.undoButtonClickHandler);
     }
+
+    private exitButtonClickHandler: () => void = () => { };
+    private undoButtonClickHandler: () => void = () => { };
 
     /**
      * Adds a token image to the specified canvas context at the given (x, y) position for the given player.
