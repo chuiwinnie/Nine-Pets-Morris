@@ -332,6 +332,7 @@ export class Display {
      */
     private setUpButtonListeners(game: Game): void {
         const exitButton = document.getElementById('exit') as HTMLButtonElement;
+        const saveButton = document.getElementById('save') as HTMLButtonElement;
         const undoButton = document.getElementById('undo') as HTMLButtonElement;
 
         // disable the undo button if no previous moves available
@@ -347,6 +348,12 @@ export class Display {
         };
         exitButton.addEventListener('click', this.exitButtonClickHandler);
 
+        saveButton.removeEventListener('click', this.saveButtonClickHandler);
+        this.saveButtonClickHandler = () => {
+            game.save();
+        };
+        saveButton.addEventListener('click', this.saveButtonClickHandler);
+
         undoButton.removeEventListener('click', this.undoButtonClickHandler);
         this.undoButtonClickHandler = () => {
             game.undo(this);
@@ -355,6 +362,7 @@ export class Display {
     }
 
     private exitButtonClickHandler: () => void = () => { };
+    private saveButtonClickHandler: () => void = () => { };
     private undoButtonClickHandler: () => void = () => { };
 
     /**

@@ -146,27 +146,28 @@ export class Game {
      * Exits the game.
      */
     exit(): void {
-        const shouldSaveGame = confirm('Do you want to save the game?');
+        const confirmExit = confirm('Are you sure you want to exit the game without saving it?');
+        if (confirmExit) {
+            window.location.href = '/menu';
+        }
+    }
 
-        if (shouldSaveGame) {
-            // save the current game before exiting
-            var gameName = prompt('Enter the game name:');
+    /**
+     * Saves the game.
+     */
+    save(): void {
+        // ask user for the game name
+        var gameName = prompt('Enter the game name:');
 
-            // validate game name before saving
-            while (gameName != null && gameName.length == 0) {
-                alert("Please enter a game name.");
-                gameName = prompt('Enter the game name:');
-            }
+        // validate game name before saving
+        while (gameName != null && gameName.length == 0) {
+            alert("Please enter a game name.");
+            gameName = prompt('Enter the game name:');
+        }
 
-            if (gameName != null) {
-                this.saveToFile(gameName);
-                window.location.href = '/menu';
-            }
-        } else {
-            const confirmExit = confirm('Are you sure you want to exit the game without saving it?');
-            if (confirmExit) {
-                window.location.href = '/menu';
-            }
+        if (gameName != null) {
+            this.saveToFile(gameName);
+            window.location.href = '/menu';
         }
     }
 
