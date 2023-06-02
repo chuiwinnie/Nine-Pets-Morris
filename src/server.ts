@@ -58,34 +58,43 @@ app.post('/save', (req, res) => {
 
 
 app.get('/load', (req, res) => {
-  fs.readFile(path.join(__dirname,'..','data.txt'), 'utf8', (err, data) => {
+  const filePath = path.join(__dirname, '..', 'data.txt');
+
+  fs.access(filePath, fs.constants.F_OK, (err) =>{
     if (err) {
-      console.error('Error reading data file:', err);
-      res.status(500).send('Error loading game data');
+      console.error('Data file does not exist:', filePath);
+      res.status(200).send([]);
     } else {
-      const gameEntries = data.trim().split('\n');
-      const gameList = [];
-      let currentGame = { name: '', data: '' };
-      for (const gameEntry of gameEntries) {
-          if (gameEntry[0] !== '{') {
-            // New game entry detected
+      fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+          console.error('Error reading data file:', err);
+          res.status(500).send('Error loading game data');
+        } else {
+          const gameEntries = data.trim().split('\n');
+          const gameList = [];
+          let currentGame = { name: '', data: '' };
+          for (const gameEntry of gameEntries) {
+              if (gameEntry[0] !== '{') {
+                // New game entry detected
+                if (currentGame.name !== '' && currentGame.data !== '') {
+                  gameList.push(currentGame);
+                }
+                currentGame = { name: gameEntry.trim(), data: '' };
+              } else {
+                // Continue existing game entry
+                currentGame.data += gameEntry;
+              }
+            }
+
+            // Add the last game entry
             if (currentGame.name !== '' && currentGame.data !== '') {
               gameList.push(currentGame);
             }
-            currentGame = { name: gameEntry.trim(), data: '' };
-          } else {
-            // Continue existing game entry
-            currentGame.data += gameEntry;
+
+            //res.json(gameList);     
+            res.send(gameList);
           }
-        }
-
-        // Add the last game entry
-        if (currentGame.name !== '' && currentGame.data !== '') {
-          gameList.push(currentGame);
-        }
-
-        //res.json(gameList);     
-        res.send(gameList);
-      }
+      });
+    }
   });
 });
