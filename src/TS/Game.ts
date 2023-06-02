@@ -148,7 +148,7 @@ export class Game {
         if (shouldSaveGame) {
             // save the current game before exiting
             var gameName = prompt('Enter the game name:');
-            
+
             while (gameName != null && gameName.length == 0) {
                 alert("Please enter a game name.")
                 gameName = prompt('Enter the game name:');

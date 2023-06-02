@@ -87,22 +87,6 @@ export class Display {
     }
 
     /**
-     * Shows the main menu.
-     */
-    showMainMenu(app: Application): void {
-        const startButton = document.getElementById('newGame') as HTMLButtonElement;
-
-        startButton.removeEventListener('click', this.startButtonClickHandler);
-
-        this.startButtonClickHandler = () => {
-            window.location.href = '/';
-            app.startNewGame();
-        };
-
-        startButton.addEventListener('click', this.startButtonClickHandler);
-    }
-
-    /**
      * Shows the list of all previous games.
      * @param gameList The list of games to display.
      */
@@ -111,9 +95,10 @@ export class Display {
 
         gameListElement.innerHTML = '';
 
-        gameList.forEach((gameName, index) => {
+        gameList.forEach((game, index) => {
             const listItem = document.createElement('li');
-            listItem.textContent = index.toString();
+            index++;
+            listItem.textContent = index.toString() + ": " + game.getName();
             gameListElement.appendChild(listItem);
         });
     }

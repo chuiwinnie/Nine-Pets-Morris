@@ -89,69 +89,52 @@ export class Application {
      */
     loadFromFile(): void {
         fetch('/load')
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(game => {
-                const gameName = game.name;
-                const gameData = JSON.parse(game.data);
-                
-                console.log('Game Name:', gameName);
-                console.log('Game Data:', gameData);
-                const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
-                    if (teamData) {
-                      return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
-                    } else {
-                      return new Team(0, 9, 9);
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(game => {
+                    const gameName = game.name;
+                    const gameData = JSON.parse(game.data);
+
+                    console.log('Game Name:', gameName);
+                    console.log('Game Data:', gameData);
+
+                    const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
+                        if (teamData) {
+                            return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
+                        } else {
+                            return new Team(0, 9, 9);
+                        }
+                    }) : [];
+                    const loadedCurrentPlayer = gameData.currentPlayer;
+                    const loadedgamePhase = gameData.gamePhase;
+                    const loadedPosition: Position[] = gameData.positions ? gameData.positions.map((positionData, index) => {
+                        const player = positionData.player !== undefined && positionData.player !== '' ? positionData.player : undefined;
+                        return new Position(player, index);
                     }
-                }) : [];
-                const loadedCurrentPlayer = gameData.currentPlayer;
-                const loadedgamePhase = gameData.gamePhase;
-                const loadedPosition: Position[] = gameData.positions ? gameData.positions.map((positionData, index) => {
-                    const player = positionData.player !== undefined && positionData.player !== '' ? positionData.player : undefined;
-                    return new Position(player, index);}
-                ): [];
-                const loadedBoard = new Board(loadedTeams,loadedCurrentPlayer, loadedPosition, loadedgamePhase);
-                const loadedGame = new Game([loadedBoard],loadedBoard);
-                
-                this.gameList.push(loadedGame);
-                this.display.showGameList(this.gameList);
-                this.display.showMainMenu(this);
+                    ) : [];
+                    const loadedBoard = new Board(loadedTeams, loadedCurrentPlayer, loadedPosition, loadedgamePhase);
+                    const loadedGame = new Game([loadedBoard], loadedBoard, gameName);
+
+                    this.gameList.push(loadedGame);
+                    this.display.showGameList(this.gameList);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading game data:', error);
             });
-        })
-        .catch(error => {
-            console.error('Error loading game data:', error);
-        });
     }
-
-    /**
-     * Exits the current game.
-     * @param gameIndex The index of the current game
-     */
-    exit(gameIndex: number): void { }
-
-
-
-    handleMenuPageLoad() {
-        // Code for handling menu page load
-        this.loadFromFile();
-    }
-      
-    handleApplicationPageLoad() {
-        this.startNewGame();
-    }
-      
 }
 
 
-// This application currently can only start new games (Sprint 1).
+// get the application instance
 const application = Application.getInstance();
-// application.startNewGame();
-// Get the current URL
+
+// get the current URL
 const currentURL = window.location.href;
-    
-// Check if the current URL matches the menu page URL
+
+// load the game list menu or start a new game based on whether the current URL matches the menu page or game page URL
 if (currentURL.includes("/menu")) {
-    application.handleMenuPageLoad();
-}else if (currentURL.includes("/")) {
-    application.handleApplicationPageLoad();
+    application.loadFromFile();
+} else if (currentURL.includes("/")) {
+    application.startNewGame();
 }
