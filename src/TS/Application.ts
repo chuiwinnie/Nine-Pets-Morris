@@ -84,17 +84,6 @@ export class Application {
     }
 
     /**
-     * Creates a new with an empty board and two teams (Cat and Dog by default).
-     */
-    createNewGame() {
-        const boardHistory: Board[] = [];
-        boardHistory.push(new Board());
-
-        const newGame = new Game(boardHistory);
-        this.gameList.push(newGame);
-    }
-
-    /**
      * Loads games from the TXT data file.
      */
     loadFromFile(): void {
@@ -103,12 +92,13 @@ export class Application {
             .then(data => {
                 data.forEach(game => {
                     const gameName = game.name;
-                    const boards= game.data.split('\r');
+                    const boards = game.data.split('\r');
                     const boardHist: Board[] = [];
+
                     boards.forEach(board => {
                         if (board.trim() === '') return;
                         const gameData = JSON.parse(board);
-    
+
                         const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
                             if (teamData) {
                                 return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
@@ -123,9 +113,11 @@ export class Application {
                             return new Position(player, index);
                         }
                         ) : [];
+
                         const loadedBoard = new Board(loadedTeams, loadedCurrentPlayer, loadedPosition, loadedgamePhase);
-                        boardHist.push(loadedBoard)
+                        boardHist.push(loadedBoard);
                     });
+
                     const loadedGame = new Game(boardHist, boardHist[-1], gameName);
                     this.gameList.push(loadedGame);
                 });
@@ -143,7 +135,7 @@ export class Application {
     /**
      * Loads the application to show either the menu page or the game page.
      */
-    loadApplication() {
+    private loadApplication(): void {
         if (this.showingMenu) {
             this.display.showGameList(this.gameList);
         } else {
@@ -156,6 +148,17 @@ export class Application {
             console.log("Loaded Game - " + this.currentGame.getName());
         }
     }
+
+    /**
+     * Creates a new with an empty board and two teams (Cat and Dog by default).
+     */
+    private createNewGame(): void {
+        const boardHistory: Board[] = [];
+        boardHistory.push(new Board());
+
+        const newGame = new Game(boardHistory);
+        this.gameList.push(newGame);
+    }
 }
 
 
@@ -165,12 +168,11 @@ const application = Application.getInstance();
 // get the current URL
 const currentURL = window.location.href;
 
-// load the game list menu or start a new game based on whether the current URL matches the menu page or game page URL
+// load the application with either the menu page or the game page
 if (currentURL.includes("/menu")) {
     application.showingMenu = true;
 } else if (currentURL.includes("/")) {
     application.showingMenu = false;
 }
-
 application.loadFromFile();
 console.log("Current game index: " + localStorage.getItem("currentGameIndex"));

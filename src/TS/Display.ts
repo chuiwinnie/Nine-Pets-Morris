@@ -108,8 +108,8 @@ export class Display {
 
         // set up start new game button listener
         const startNewGameButton = document.getElementById("startNewGame");
-        startNewGameButton.removeEventListener('click', function() {Application.getInstance().startNewGame();});
-        startNewGameButton.addEventListener('click', function() {Application.getInstance().startNewGame();});
+        startNewGameButton.removeEventListener('click', function () { Application.getInstance().startNewGame(); });
+        startNewGameButton.addEventListener('click', function () { Application.getInstance().startNewGame(); });
     }
 
     /**
@@ -326,7 +326,7 @@ export class Display {
      * Sets up event listeners for the exit and undo buttons.
      * @param game The game currently being displayed. 
      */
-    private setUpButtonListeners(game: Game) {
+    private setUpButtonListeners(game: Game): void {
         const exitButton = document.getElementById('exit') as HTMLButtonElement;
         const undoButton = document.getElementById('undo') as HTMLButtonElement;
 
@@ -337,11 +337,11 @@ export class Display {
             undoButton.disabled = true;
         }
 
-        exitButton.removeEventListener('click', function() {game.exit();});
-        exitButton.addEventListener('click', function() {game.exit();});
+        exitButton.removeEventListener('click', function () { game.exit(); });
+        exitButton.addEventListener('click', function () { game.exit(); });
 
-        undoButton.removeEventListener('click', function() {game.undo(Display.getInstance());});
-        undoButton.addEventListener('click', function() {game.undo(Display.getInstance());})
+        undoButton.removeEventListener('click', function () { game.undo(Display.getInstance()); });
+        undoButton.addEventListener('click', function () { game.undo(Display.getInstance()); })
     }
 
     /**

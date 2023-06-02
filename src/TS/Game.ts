@@ -40,7 +40,7 @@ export class Game {
      * Gets the board history of the game.
      * @returns The array of all previous boards of the game.
      */
-    getBoardHistory() {
+    getBoardHistory(): Board[] {
         return this.boardHistory;
     }
 
@@ -48,7 +48,7 @@ export class Game {
      * Gets the name of the game.
      * @returns The game name.
      */
-    getName() {
+    getName(): String {
         return this.name
     }
 
@@ -152,8 +152,9 @@ export class Game {
             // save the current game before exiting
             var gameName = prompt('Enter the game name:');
 
+            // validate game name before saving
             while (gameName != null && gameName.length == 0) {
-                alert("Please enter a game name.")
+                alert("Please enter a game name.");
                 gameName = prompt('Enter the game name:');
             }
 
@@ -174,14 +175,14 @@ export class Game {
      * @param gameName The name of the game.
      */
     async saveToFile(gameName: String): Promise<void> {
-        console.log("Client executes request")
+        console.log("Client executes request");
 
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
         const requestBody = boardStrings.join('\n') + '\n';
         const newRequestBody = gameName + '\n' + requestBody;
         console.log(requestBody)
-        
+
         const response = await fetch('http://localhost:3000/save', {
             method: 'POST',
             headers: {
