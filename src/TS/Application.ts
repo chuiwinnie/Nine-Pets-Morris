@@ -35,6 +35,11 @@ export class Application {
     private static applicationInstance: Application;
 
     /**
+     * A boolean indicating whether the application is currently showing the menu page or the game page.
+     */
+    showingMenu: Boolean = true;
+
+    /**
      * Constructs a new application with an empty game list and a Display object.
      */
     private constructor() {
@@ -62,30 +67,35 @@ export class Application {
     }
 
     /**
-     * Starts a new game with an empty board and two teams (Cat and Dog by default).
+     * Starts a new game.
      */
     startNewGame(): void {
+        const newGameIndex = this.gameList.length;
+        this.loadGame(newGameIndex);
+    }
+
+    /**
+     * Loads the game specified by gameIndex from the gameList.
+     * @param gameIndex The index of the game to be loaded from the gameList.
+     */
+    loadGame(gameIndex: number): void {
+        localStorage.setItem("currentGameIndex", gameIndex.toString());
+        window.location.href = '/';
+    }
+
+    /**
+     * Creates a new with an empty board and two teams (Cat and Dog by default).
+     */
+    createNewGame() {
         const boardHistory: Board[] = [];
         boardHistory.push(new Board());
 
         const newGame = new Game(boardHistory);
         this.gameList.push(newGame);
-
-        const newGameIndex = this.gameList.length - 1;
-        this.loadGame(newGameIndex);
     }
 
     /**
-     * Loads the game specified by gameIndex from the gameList and runs it on display.
-     * @param gameIndex The index of the game to be loaded from the gameList.
-     */
-    loadGame(gameIndex: number): void {
-        this.currentGame = this.gameList[gameIndex];
-        this.currentGame.run(this.display);
-    }
-
-    /**
-     * Loads games from a TXT file.
+     * Loads games from the TXT data file.
      */
     loadFromFile(): void {
         fetch('/load')
@@ -94,9 +104,6 @@ export class Application {
                 data.forEach(game => {
                     const gameName = game.name;
                     const gameData = JSON.parse(game.data);
-
-                    console.log('Game Name:', gameName);
-                    console.log('Game Data:', gameData);
 
                     const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
                         if (teamData) {
@@ -116,12 +123,33 @@ export class Application {
                     const loadedGame = new Game([loadedBoard], loadedBoard, gameName);
 
                     this.gameList.push(loadedGame);
-                    this.display.showGameList(this.gameList);
                 });
+
+                console.log("Loaded game list from file");
+                console.log(this.gameList);
+
+                this.loadApplication();
             })
             .catch(error => {
                 console.error('Error loading game data:', error);
             });
+    }
+
+    /**
+     * Loads the application to show either the menu page or the game page.
+     */
+    loadApplication() {
+        if (this.showingMenu) {
+            this.display.showGameList(this.gameList);
+        } else {
+            const currentGameIndex = localStorage.getItem("currentGameIndex");
+            if (Number(currentGameIndex) >= this.gameList.length) {
+                this.createNewGame();
+            }
+            this.currentGame = this.gameList[currentGameIndex];
+            this.currentGame.run(this.display);
+            console.log("Loaded Game - " + this.currentGame.getName());
+        }
     }
 }
 
@@ -134,7 +162,10 @@ const currentURL = window.location.href;
 
 // load the game list menu or start a new game based on whether the current URL matches the menu page or game page URL
 if (currentURL.includes("/menu")) {
-    application.loadFromFile();
+    application.showingMenu = true;
 } else if (currentURL.includes("/")) {
-    application.startNewGame();
+    application.showingMenu = false;
 }
+
+application.loadFromFile();
+console.log("Current game index: " + localStorage.getItem("currentGameIndex"));

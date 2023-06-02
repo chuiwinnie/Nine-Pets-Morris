@@ -92,19 +92,29 @@ export class Display {
      */
     showGameList(gameList: Game[]): void {
         const gameListElement = document.getElementById('gameList');
+        gameListElement.innerHTML = "";
 
-        gameListElement.innerHTML = '';
-
+        // display each saved game in a list
         gameList.forEach((game, index) => {
-            const listItem = document.createElement('li');
-            index++;
-            listItem.textContent = index.toString() + ": " + game.getName();
-            gameListElement.appendChild(listItem);
+            gameListElement.innerHTML += `<li id="${index}">` + game.getName() + `</li>`;
         });
+
+        // set up listener for each game list item
+        for (let index = 0; index < gameList.length; index++) {
+            document.getElementById(`${index}`).addEventListener("click", function () {
+                Application.getInstance().loadGame(index);
+            });
+        }
+
+        // set up start new game button listener
+        const startNewGameButton = document.getElementById("startNewGame");
+        startNewGameButton.removeEventListener('click', function() {Application.getInstance().startNewGame();});
+        startNewGameButton.addEventListener('click', function() {Application.getInstance().startNewGame();});
     }
 
     /**
      * Shows the game board.
+     * @param game The game currently being displayed.
      * @param board The game board to display.
      * @param lastBoard Whether the board to be displayed is the last board/turn of the game.
      */
@@ -115,6 +125,7 @@ export class Display {
         this.drawVerticalLines(context);
         this.displayGameInfo(board);
         this.detectNodeClick(lastBoard ?? false);
+        this.setUpButtonListeners(game);
 
         // add tokens at the correct positions
         for (let i = 0; i < Display.NODES.length; i++) {
@@ -130,36 +141,7 @@ export class Display {
                     break;
             }
         }
-
-        const exitButton = document.getElementById('exit') as HTMLButtonElement;
-        const undoButton = document.getElementById('undo') as HTMLButtonElement;
-
-        // disable the undo button if no previous moves available
-        if (game.getBoardHistory().length > 1) {
-            undoButton.disabled = false;
-        } else {
-            undoButton.disabled = true;
-        }
-
-        exitButton.removeEventListener('click', this.exitButtonClickHandler);
-        undoButton.removeEventListener('click', this.undoButtonClickHandler);
-
-        this.exitButtonClickHandler = () => {
-            game.exit();
-        };
-
-        this.undoButtonClickHandler = () => {
-            game.undo(this);
-        };
-
-        exitButton.addEventListener('click', this.exitButtonClickHandler);
-        undoButton.addEventListener('click', this.undoButtonClickHandler);
-
     }
-
-    private exitButtonClickHandler: () => void = () => { };
-    private undoButtonClickHandler: () => void = () => { };
-    private startButtonClickHandler: () => void = () => { };
 
     /**
      * Sets up the canvas to display the game board.
@@ -338,6 +320,28 @@ export class Display {
             context.arc(x, y, r, 0, Math.PI * 2);
             context.closePath();
         }
+    }
+
+    /**
+     * Sets up event listeners for the exit and undo buttons.
+     * @param game The game currently being displayed. 
+     */
+    private setUpButtonListeners(game: Game) {
+        const exitButton = document.getElementById('exit') as HTMLButtonElement;
+        const undoButton = document.getElementById('undo') as HTMLButtonElement;
+
+        // disable the undo button if no previous moves available
+        if (game.getBoardHistory().length > 1) {
+            undoButton.disabled = false;
+        } else {
+            undoButton.disabled = true;
+        }
+
+        exitButton.removeEventListener('click', function() {game.exit();});
+        exitButton.addEventListener('click', function() {game.exit();});
+
+        undoButton.removeEventListener('click', function() {game.undo(Display.getInstance());});
+        undoButton.addEventListener('click', function() {game.undo(Display.getInstance());})
     }
 
     /**
