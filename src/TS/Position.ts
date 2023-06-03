@@ -278,8 +278,8 @@ export class Position {
     }
 
     /**
-     * TODO
-     * @returns 
+     * Turns the current object into JSON
+     * @returns JSON object of this object
      */
     toJSON(): any {
         return {

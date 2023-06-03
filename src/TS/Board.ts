@@ -59,9 +59,9 @@ export class Board {
     }
 
     /**
-     * TODO
-     * @param positions 
-     * @returns 
+     * Push new position objects into the positions array.
+     * @param positions array of positions to be pushed into the positions array.
+     * @returns Position array with new instances of positions so that one update does not affect all instances of the same position.
      */
     private setPositions(positions: Position[]): Position[] {
         const positionBoard: Position[] = [];
@@ -85,7 +85,7 @@ export class Board {
     }
 
     /**
-     * TODO
+     * Joins all the positions to create a network
      */
     private joinPositions(): void {
         this.positions[0].setNeighbour(Direction.Right, this.positions[1]);
@@ -203,16 +203,16 @@ export class Board {
     }
 
     /**
-     * TODO
-     * @returns 
+     * Gets the teams array.
+     * @returns Team array
      */
     getTeams(): Team[] {
         return this.teams;
     }
 
     /**
-     * TODO
-     * @returns 
+     * Gets the current player enum.
+     * @returns Current player enum
      */
     getCurrentPlayer(): Player {
         return this.currentPlayer;
@@ -294,8 +294,8 @@ export class Board {
     }
 
     /**
-     * TODO
-     * @returns 
+     * Turns the current object into JSON
+     * @returns JSON object of this object
      */
     toJSON(): any {
         return {
