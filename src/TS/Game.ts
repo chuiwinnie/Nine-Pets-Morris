@@ -23,6 +23,10 @@ export class Game {
      */
     private name: String;
 
+    /**
+     * The index of the game in the game list.
+     * If it is a new game, it is undefined
+     */
     private gameIndex?: number;
 
     /**
@@ -207,6 +211,7 @@ export class Game {
       
         let requestUrl = 'http://localhost:3000/save';
         
+        // If gameIndex is defined, it is sent through. If it is not, it is sent as -1 to indicate to push the game
         if (gameIndex !== undefined) {
           requestUrl += `?gameIndex=${gameIndex}`;
         } else {
