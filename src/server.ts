@@ -41,20 +41,39 @@ app.post('/save', (req, res) => {
   //const jsonContent = JSON.stringify(req.body);
   console.log("server received request")
   console.log(req.body)
+
+  const gameIndex = Number(req.query.gameIndex);
   if (req.body) {
     const boardStrings = req.body.split('\n');
     const filePath = path.join(__dirname, '..','data.txt');
 
-    boardStrings.forEach((boardString) => {
-      fs.writeFileSync(path.join(__dirname, '..','data.txt'), boardString + '\n', { flag: 'a' });
-      });
-        console.log('Text file written successfully');
-        res.send('Data saved successfully');
-  }else {
-    console.error('Received empty JSON data');
-    res.status(400).send('Received empty JSON data');
+    const gameData = fs.readFileSync(filePath, 'utf8');
+    const gameEntries = gameData.trim().split('\n');
+
+    if (gameIndex == -1) {
+      boardStrings.forEach((boardString) => {
+        fs.writeFileSync(path.join(__dirname, '..','data.txt'), boardString + '\n', { flag: 'a' });
+        });
+      console.log('Text file written successfully');
+      res.send('Data saved successfully');
+    } else if (gameIndex >= 0) {
+      gameEntries[gameIndex] = boardStrings.join('\n');
+      fs.writeFileSync(filePath, gameEntries.join('\n'));
+      console.log('Text file updated successfully');
+      res.send('Data saved successfully');
+    } else {
+      console.error('Received empty or invalid JSON data or gameIndex');
+      res.status(400).send('Received empty or invalid JSON data or gameIndex');
+    }
+  } else {
+    console.error('Received empty or invalid JSON data or gameIndex');
+    res.status(400).send('Received empty or invalid JSON data or gameIndex');
   }
 });
+
+
+
+
 
 
 app.get('/load', (req, res) => {

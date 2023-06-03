@@ -90,6 +90,7 @@ export class Application {
         fetch('/load')
             .then(response => response.json())
             .then(data => {
+                var gameIndexCounter = 0;
                 data.forEach(game => {
                     const gameName = game.name;
                     const boards = game.data.split('\r');
@@ -118,8 +119,9 @@ export class Application {
                         boardHist.push(loadedBoard);
                     });
 
-                    const loadedGame = new Game(boardHist, boardHist[-1], gameName);
+                    const loadedGame = new Game(boardHist, gameIndexCounter, boardHist[-1], gameName);
                     this.gameList.push(loadedGame);
+                    gameIndexCounter++;
                 });
 
                 console.log("Loaded game list from file");
@@ -141,7 +143,7 @@ export class Application {
         } else {
             const currentGameIndex = localStorage.getItem("currentGameIndex");
             if (Number(currentGameIndex) >= this.gameList.length) {
-                this.createNewGame();
+                this.createNewGame(Number(currentGameIndex));
             }
             this.currentGame = this.gameList[currentGameIndex];
             this.currentGame.run(this.display);
@@ -152,11 +154,14 @@ export class Application {
     /**
      * Creates a new with an empty board and two teams (Cat and Dog by default).
      */
-    private createNewGame(): void {
+    private createNewGame(currentGameIndex?: number): void {
         const boardHistory: Board[] = [];
         boardHistory.push(new Board());
-
-        const newGame = new Game(boardHistory);
+        var newGame = new Game(boardHistory);
+        if (currentGameIndex) {
+            newGame = new Game(boardHistory, currentGameIndex);
+        } 
+        
         this.gameList.push(newGame);
     }
 }

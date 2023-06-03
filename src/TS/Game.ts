@@ -23,17 +23,20 @@ export class Game {
      */
     private name: String;
 
+    private gameIndex?: number;
+
     /**
      * Contructs a game with the specified board history.
      * @param boardHistory An array of previous boards.
      * @param currentBoard The current board of the game.
      */
-    constructor(boardHistory: Board[], currentBoard?: Board, name?: String) {
+    constructor(boardHistory: Board[], gameIndex?: number, currentBoard?: Board, name?: String) {
         this.boardHistory = boardHistory;
         let topBoard = this.boardHistory[this.boardHistory.length - 1];
         topBoard = new Board(topBoard.getTeams(), topBoard.getCurrentPlayer(), topBoard.getPositions(), topBoard.getGamePhase())
         this.currentBoard = currentBoard ?? topBoard;
-        this.name = name
+        this.name = name;
+        this.gameIndex = gameIndex;
     }
 
     /**
@@ -156,6 +159,23 @@ export class Game {
      * Saves the game.
      */
     save(): void {
+        // Ask user for saving game as previous game or new game only if the game is not a new game
+        console.log(this.gameIndex)
+        if (this.gameIndex !== undefined) {
+            var isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
+            var validResponse = ['Y', 'y', 'N', 'n'];        
+            while (!validResponse.includes(isSaveAsNewGame)) {
+                isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
+            }
+
+            if (isSaveAsNewGame == 'N' || isSaveAsNewGame == 'n') {
+                this.saveToFile(this.name, this.gameIndex);
+                window.location.href = '/menu';
+                return;
+            }
+        }
+
+
         // ask user for the game name
         var gameName = prompt('Enter the game name:');
 
@@ -175,29 +195,39 @@ export class Game {
      * Saves the game to the data file.
      * @param gameName The name of the game.
      */
-    async saveToFile(gameName: String): Promise<void> {
+    async saveToFile(gameName: String, gameIndex?: number): Promise<void> {
         console.log("Client executes request");
-
+        console.log(gameIndex);
+      
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
         const requestBody = boardStrings.join('\n') + '\n';
         const newRequestBody = gameName + '\n' + requestBody;
-        console.log(requestBody)
-
-        const response = await fetch('http://localhost:3000/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'text/plain',
-            },
-            body: newRequestBody,
-        });
-
-        if (response.ok) {
-            console.log('Data saved successfully');
+        console.log(requestBody);
+      
+        let requestUrl = 'http://localhost:3000/save';
+        
+        if (gameIndex !== undefined) {
+          requestUrl += `?gameIndex=${gameIndex}`;
         } else {
-            console.error('Error saving data:', response.status);
+            requestUrl += `?gameIndex=-1`;
+        }
+      
+        const response = await fetch(requestUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain',
+          },
+          body: newRequestBody,
+        });
+      
+        if (response.ok) {
+          console.log('Data saved successfully');
+        } else {
+          console.error('Error saving data:', response.status);
         }
     }
+      
 
     /**
      * Checks if a victory condition of the game has been met.
