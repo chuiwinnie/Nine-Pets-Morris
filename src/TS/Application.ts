@@ -147,7 +147,7 @@ export class Application {
             }
             this.currentGame = this.gameList[currentGameIndex];
             this.currentGame.run(this.display);
-            console.log("Loaded Game - " + this.currentGame.getName());
+            console.log(`Loaded Game\n  Index: ${currentGameIndex}\n  Name: ${this.currentGame.getName()}`);
         }
     }
 

@@ -163,16 +163,20 @@ export class Game {
      * Saves the game.
      */
     save(): void {
+        console.log(`Saving Game\n  Index: ${this.gameIndex}\n  Name: ${this.name}`);
+
         // Ask user for saving game as previous game or new game only if the game is not a new game
-        console.log(this.gameIndex)
-        if (this.gameIndex !== undefined) {
+        if (this.name !== undefined) {
             var isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
-            var validResponse = ['Y', 'y', 'N', 'n'];        
+            var validResponse = ['Y', 'y', 'Yes', 'yes', 'N', 'n', 'No', 'no'];        
             while (!validResponse.includes(isSaveAsNewGame)) {
+                if (isSaveAsNewGame == null) {
+                    return;
+                }
                 isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
             }
 
-            if (isSaveAsNewGame == 'N' || isSaveAsNewGame == 'n') {
+            if (isSaveAsNewGame == 'N' || isSaveAsNewGame == 'n' || isSaveAsNewGame == 'No' || isSaveAsNewGame == 'no') {
                 this.saveToFile(this.name, this.gameIndex);
                 window.location.href = '/menu';
                 return;
@@ -200,9 +204,6 @@ export class Game {
      * @param gameName The name of the game.
      */
     async saveToFile(gameName: String, gameIndex?: number): Promise<void> {
-        console.log("Client executes request");
-        console.log(gameIndex);
-      
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
         const requestBody = boardStrings.join('\n') + '\n';
@@ -217,6 +218,8 @@ export class Game {
         } else {
             requestUrl += `?gameIndex=-1`;
         }
+
+        console.log("Client executes request:\n" + requestUrl);
       
         const response = await fetch(requestUrl, {
           method: 'POST',
