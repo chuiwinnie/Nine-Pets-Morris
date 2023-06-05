@@ -166,7 +166,7 @@ export class Game {
         console.log(`Saving Game\n  Index: ${this.gameIndex}\n  Name: ${this.name}`);
 
         // Ask user for saving game as previous game or new game only if the game is not a new game
-        if (this.name !== undefined) {
+        if (this.name) {
             var isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
             var validResponse = ['Y', 'y', 'Yes', 'yes', 'N', 'n', 'No', 'no'];        
             while (!validResponse.includes(isSaveAsNewGame)) {
@@ -188,12 +188,12 @@ export class Game {
         var gameName = prompt('Enter the game name:');
 
         // validate game name before saving
-        while (gameName != null && gameName.length == 0) {
+        while (gameName && gameName.length == 0) {
             alert("Please enter a game name.");
             gameName = prompt('Enter the game name:');
         }
 
-        if (gameName != null) {
+        if (gameName) {
             this.saveToFile(gameName);
             window.location.href = '/menu';
         }

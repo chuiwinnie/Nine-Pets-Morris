@@ -13,9 +13,9 @@ const __dirname = dirname(__filename);
 
 // Serve static files from the dist directory
 app.use('/out', express.static(path.join(__dirname, '..', 'out')));
-app.use('/assets',express.static(path.join(__dirname,'..', 'assets')));
+app.use('/assets', express.static(path.join(__dirname, '..', 'assets')));
 
-app.use(express.static(path.join(__dirname,'..', 'Application.css')));
+app.use(express.static(path.join(__dirname, '..', 'Application.css')));
 app.get('/Application.css', (req, res) => {
   res.setHeader('Content-Type', 'text/css');
   res.sendFile(path.join(__dirname, '../Application.css'));
@@ -44,42 +44,92 @@ app.post('/save', (req, res) => {
 
   const gameIndex = Number(req.query.gameIndex);
   if (req.body) {
-    const boardStrings = req.body.split('\n');
-    const filePath = path.join(__dirname, '..','data.txt');
+    // Create a new game object from the request body
+    const newGameData = req.body.split('\n');
+    const newGameName = newGameData.shift();
 
+    const boardsData = [];
+    let currentBoard = '';
+    let openingBrackets = 0;
+    let closingBrackets = 0;
+
+    for (const line of newGameData) {
+      currentBoard += line;
+      openingBrackets += (line.match(/{/g) || []).length;
+      closingBrackets += (line.match(/}/g) || []).length;
+
+      if (openingBrackets === closingBrackets) {
+        boardsData.push(currentBoard);
+        currentBoard = '';
+        openingBrackets = 0;
+        closingBrackets = 0;
+      } else {
+        currentBoard += '\n';
+      }
+    }
+
+    const newGameObject = {
+      name: newGameName,
+      boards: boardsData.join('\n')
+    };
+
+    // Read the data file
+    const filePath = path.join(__dirname, '..', 'data.txt');
     const gameData = fs.readFileSync(filePath, 'utf8');
-    const gameEntries = gameData.trim().split('\n');
 
+    // Games are seperated by two newlines
+    const gameEntries = gameData.trim().split(/\n\n/);
+
+    // Parse the game entries into objects
+    const gameObjects = [];
+    gameEntries.forEach((entry) => {
+      const [name, ...boards] = entry.trim().split('\n');
+      const cleanedBoards = boards.filter(board => board.trim() !== ''); // Remove empty lines
+
+      const game = {
+        name: name.trim(),
+        boards: cleanedBoards.join('\n')
+      };
+
+      gameObjects.push(game);
+    });
+    
+    // New game, push to the end of the array
     if (gameIndex == -1) {
-      boardStrings.forEach((boardString) => {
-        fs.writeFileSync(path.join(__dirname, '..','data.txt'), boardString + '\n', { flag: 'a' });
-        });
-      console.log('Text file written successfully');
-      res.send('Data saved successfully');
+      gameObjects.push(newGameObject)
+    // Existing game an index given by gameIndex
     } else if (gameIndex >= 0) {
-      gameEntries[gameIndex] = boardStrings.join('\n');
-      fs.writeFileSync(filePath, gameEntries.join('\n'));
-      console.log('Text file updated successfully');
-      res.send('Data saved successfully');
+      gameObjects[gameIndex] = newGameObject;
+    // Invalid gameIndex
     } else {
       console.error('Received empty or invalid JSON data or gameIndex');
       res.status(400).send('Received empty or invalid JSON data or gameIndex');
+      return;
     }
+
+    // Create an object that can be written to the file
+    const dataString = gameObjects
+      .map((game) => {
+        const boards = game.boards.split('\n').join('\n');
+        return `${game.name}\n${boards}`;
+      })
+      .join('\n\n');
+
+    // Write the data string to the file
+    fs.writeFileSync('data.txt', dataString, 'utf8');
+    console.log('Text file written successfully');
+    res.send('Data saved successfully');
   } else {
     console.error('Received empty or invalid JSON data or gameIndex');
     res.status(400).send('Received empty or invalid JSON data or gameIndex');
+    return;
   }
 });
-
-
-
-
-
 
 app.get('/load', (req, res) => {
   const filePath = path.join(__dirname, '..', 'data.txt');
 
-  fs.access(filePath, fs.constants.F_OK, (err) =>{
+  fs.access(filePath, fs.constants.F_OK, (err) => {
     if (err) {
       console.error('Data file does not exist:', filePath);
       res.status(200).send([]);
@@ -93,27 +143,27 @@ app.get('/load', (req, res) => {
           const gameList = [];
           let currentGame = { name: '', data: '' };
           for (const gameEntry of gameEntries) {
-              if (gameEntry[0] !== '{') {
-                // New game entry detected
-                if (currentGame.name !== '' && currentGame.data !== '') {
-                  gameList.push(currentGame);
-                }
-                currentGame = { name: gameEntry.trim(), data: '' };
-              } else {
-                // Continue existing game entry
-                currentGame.data += '\r'
-                currentGame.data += gameEntry;
+            if (gameEntry[0] !== '{') {
+              // New game entry detected
+              if (currentGame.name !== '' && currentGame.data !== '') {
+                gameList.push(currentGame);
               }
+              currentGame = { name: gameEntry.trim(), data: '' };
+            } else {
+              // Continue existing game entry
+              currentGame.data += '\r'
+              currentGame.data += gameEntry;
             }
-
-            // Add the last game entry
-            if (currentGame.name !== '' && currentGame.data !== '') {
-              gameList.push(currentGame);
-            }
-
-            //res.json(gameList);     
-            res.send(gameList);
           }
+
+          // Add the last game entry
+          if (currentGame.name !== '' && currentGame.data !== '') {
+            gameList.push(currentGame);
+          }
+
+          //res.json(gameList);     
+          res.send(gameList);
+        }
       });
     }
   });
