@@ -59,8 +59,8 @@ export class Board {
     }
 
     /**
-     * Push new position objects into the positions array.
-     * @param positions array of positions to be pushed into the positions array.
+     * Pushes new Position objects to the positions array.
+     * @param positions An array of positions to be pushed into the positions array.
      * @returns Position array with new instances of positions so that one update does not affect all instances of the same position.
      */
     private setPositions(positions: Position[]): Position[] {
@@ -73,7 +73,7 @@ export class Board {
     }
 
     /**
-     * Set ups an empty board with 24 positions with corresponding neighbours.
+     * Sets up an empty board with 24 positions with corresponding neighbours.
      * @returns An array of positions in a game board.
      */
     private setUpPositions(): Position[] {
@@ -85,7 +85,7 @@ export class Board {
     }
 
     /**
-     * Joins all the positions to create a network
+     * Joins all the positions to create a network.
      */
     private joinPositions(): void {
         this.positions[0].setNeighbour(Direction.Right, this.positions[1]);
@@ -204,7 +204,7 @@ export class Board {
 
     /**
      * Gets the teams array.
-     * @returns Team array
+     * @returns The list of teams in the game.
      */
     getTeams(): Team[] {
         return this.teams;
@@ -294,8 +294,8 @@ export class Board {
     }
 
     /**
-     * Turns the current object into JSON
-     * @returns JSON object of this object
+     * Turns the current Board object into JSON.
+     * @returns JSON object of this Board object.
      */
     toJSON(): any {
         return {

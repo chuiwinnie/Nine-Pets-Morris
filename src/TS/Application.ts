@@ -160,8 +160,8 @@ export class Application {
         var newGame = new Game(boardHistory);
         if (currentGameIndex) {
             newGame = new Game(boardHistory, currentGameIndex);
-        } 
-        
+        }
+
         this.gameList.push(newGame);
     }
 }

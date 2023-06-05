@@ -165,10 +165,10 @@ export class Game {
     save(): void {
         console.log(`Saving Game\n  Index: ${this.gameIndex}\n  Name: ${this.name}`);
 
-        // Ask user for saving game as previous game or new game only if the game is not a new game
+        // ask user for saving game as previous game or new game only if the game is not a new game
         if (this.name) {
             var isSaveAsNewGame = prompt('Do you want to save this game as a new game? (Y/N)');
-            var validResponse = ['Y', 'y', 'Yes', 'yes', 'N', 'n', 'No', 'no'];        
+            var validResponse = ['Y', 'y', 'Yes', 'yes', 'N', 'n', 'No', 'no'];
             while (!validResponse.includes(isSaveAsNewGame)) {
                 if (isSaveAsNewGame == null) {
                     return;
@@ -188,11 +188,12 @@ export class Game {
         var gameName = prompt('Enter the game name:');
 
         // validate game name before saving
-        while (gameName && gameName.length == 0) {
+        while (gameName != null && gameName.length == 0) {
             alert("Please enter a game name.");
             gameName = prompt('Enter the game name:');
         }
 
+        // if user did not cancel entering a name
         if (gameName) {
             this.saveToFile(gameName);
             window.location.href = '/menu';
@@ -209,33 +210,33 @@ export class Game {
         const requestBody = boardStrings.join('\n') + '\n';
         const newRequestBody = gameName + '\n' + requestBody;
         console.log(requestBody);
-      
+
         let requestUrl = 'http://localhost:3000/save';
-        
+
         // If gameIndex is defined, it is sent through. If it is not, it is sent as -1 to indicate to push the game
         if (gameIndex !== undefined) {
-          requestUrl += `?gameIndex=${gameIndex}`;
+            requestUrl += `?gameIndex=${gameIndex}`;
         } else {
             requestUrl += `?gameIndex=-1`;
         }
 
         console.log("Client executes request:\n" + requestUrl);
-      
+
         const response = await fetch(requestUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain',
-          },
-          body: newRequestBody,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+            body: newRequestBody,
         });
-      
+
         if (response.ok) {
-          console.log('Data saved successfully');
+            console.log('Data saved successfully');
         } else {
-          console.error('Error saving data:', response.status);
+            console.error('Error saving data:', response.status);
         }
     }
-      
+
 
     /**
      * Checks if a victory condition of the game has been met.

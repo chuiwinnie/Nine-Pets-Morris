@@ -278,8 +278,8 @@ export class Position {
     }
 
     /**
-     * Turns the current object into JSON
-     * @returns JSON object of this object
+     * Turns the current Position object into JSON.
+     * @returns JSON object of this Position object.
      */
     toJSON(): any {
         return {
