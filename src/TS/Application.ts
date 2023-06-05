@@ -25,11 +25,6 @@ export class Application {
     private display: Display;
 
     /**
-     * The location of the text file used to store and load games.
-     */
-    private txtFileLocation?: string;
-
-    /**
      * The singleton instance of the Application class.
      */
     private static applicationInstance: Application;
