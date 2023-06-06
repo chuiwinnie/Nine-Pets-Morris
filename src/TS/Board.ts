@@ -50,7 +50,7 @@ export class Board {
         }
         this.currentPlayer = currentPlayer ?? Player.Cat;
         if (positions) {
-            this.positions = this.setPositions(positions);
+            this.positions = this.setUpPositions(positions);
         } else {
             this.positions = this.setUpPositions();
         }
@@ -59,33 +59,29 @@ export class Board {
     }
 
     /**
-     * Pushes new Position objects to the positions array.
+     * Sets up a game board with the 24 positions.
      * @param positions An array of positions to be pushed into the positions array.
-     * @returns Position array with new instances of positions so that one update does not affect all instances of the same position.
-     */
-    private setPositions(positions: Position[]): Position[] {
-        const positionBoard: Position[] = [];
-        for (let i = 0; i < 24; i++) {
-            let currentPosition = positions[i];
-            positionBoard.push(new Position(currentPosition.getPlayer(), i));
-        }
-        return positionBoard;
-    }
-
-    /**
-     * Sets up an empty board with 24 positions with corresponding neighbours.
      * @returns An array of positions in a game board.
      */
-    private setUpPositions(): Position[] {
-        const emptyBoard: Position[] = [];
-        for (let i = 0; i < 24; i++) {
-            emptyBoard.push(new Position(undefined, i));
+    private setUpPositions(positions?: Position[]): Position[] {
+        const positionsArray: Position[] = [];
+
+        if (positions) {
+            for (let i = 0; i < 24; i++) {
+                let currentPosition = positions[i];
+                positionsArray.push(new Position(currentPosition.getPlayer(), i));
+            }
+        } else {
+            for (let i = 0; i < 24; i++) {
+                positionsArray.push(new Position(undefined, i));
+            }
         }
-        return emptyBoard;
+
+        return positionsArray;
     }
 
     /**
-     * Joins all the positions to create a network.
+     * Joins all the positions with the corresponding neighbours to create a network.
      */
     private joinPositions(): void {
         this.positions[0].setNeighbour(Direction.Right, this.positions[1]);
