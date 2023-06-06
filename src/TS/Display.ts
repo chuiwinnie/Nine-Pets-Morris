@@ -117,8 +117,8 @@ export class Display {
 
         // set up download data.txt button listener
         const downloadGSButton = document.getElementById("download") as HTMLButtonElement;
-        downloadGSButton.removeEventListener('click', function () { Application.getInstance().downloadGS(); });
-        downloadGSButton.addEventListener('click', function () { Application.getInstance().downloadGS(); });
+        downloadGSButton.removeEventListener('click', function () { Application.getInstance().downloadGameData(); });
+        downloadGSButton.addEventListener('click', function () { Application.getInstance().downloadGameData(); });
 
         // disable the download button if no previous games available
         if (gameList.length == 0) {

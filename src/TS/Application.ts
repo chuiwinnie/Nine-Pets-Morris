@@ -160,7 +160,7 @@ export class Application {
         this.gameList.push(newGame);
     }
 
-    downloadGS():void {
+    downloadGameData():void {
         const fileName = "data.txt"
         fetch('/download')
           .then(response => {
