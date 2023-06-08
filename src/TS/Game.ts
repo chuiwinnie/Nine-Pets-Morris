@@ -205,12 +205,16 @@ export class Game {
      * @param gameName The name of the game.
      */
     async saveToFile(gameName: String, gameIndex?: number): Promise<void> {
+        //parsing all boards in boardHistory to JSON
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
+        //Stringify the data
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
+        //adding newline charcter to each line
         const requestBody = boardStrings.join('\n') + '\n';
+        //adding game name to the top of each game
         const newRequestBody = gameName + '\n' + requestBody;
-        console.log(requestBody);
 
+        //requesting /save handler in server
         let requestUrl = 'http://localhost:3000/save';
 
         // If gameIndex is defined, it is sent through. If it is not, it is sent as -1 to indicate to push the game
@@ -219,9 +223,7 @@ export class Game {
         } else {
             requestUrl += `?gameIndex=-1`;
         }
-
-        console.log("Client executes request:\n" + requestUrl);
-
+        //wait for the server response
         const response = await fetch(requestUrl, {
             method: 'POST',
             headers: {
@@ -229,7 +231,7 @@ export class Game {
             },
             body: newRequestBody,
         });
-
+        //check if error appeared
         if (response.ok) {
             console.log('Data saved successfully');
         } else {

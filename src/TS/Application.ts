@@ -82,19 +82,27 @@ export class Application {
      * Loads games from the TXT data file.
      */
     loadFromFile(): void {
+        //send request to server for /load 
         fetch('/load')
             .then(response => response.json())
             .then(data => {
+                //if data return successfully
                 var gameIndexCounter = 0;
+
+                //loading each game
                 data.forEach(game => {
                     const gameName = game.name;
+                    //spliting each line using '\r'
                     const boards = game.data.split('\r');
                     const boardHist: Board[] = [];
-
+                    
+                    //loading each board of the game
                     boards.forEach(board => {
+                        //check if it is last line
                         if (board.trim() === '') return;
+                        //covert board data from JSON to object
                         const gameData = JSON.parse(board);
-
+                        //create Team, current player, gamePhase, and postion of each board
                         const loadedTeams: Team[] = gameData.teams ? gameData.teams.map((teamData) => {
                             if (teamData) {
                                 return new Team(teamData.player, teamData.numUnplacedTokens, teamData.numAliveTokens);
@@ -109,22 +117,20 @@ export class Application {
                             return new Position(player, index);
                         }
                         ) : [];
-
+                        //create board and add to board history
                         const loadedBoard = new Board(loadedTeams, loadedCurrentPlayer, loadedPosition, loadedgamePhase);
                         boardHist.push(loadedBoard);
                     });
-
+                    //create Game and add to gameList
                     const loadedGame = new Game(boardHist, gameIndexCounter, boardHist[-1], gameName);
                     this.gameList.push(loadedGame);
                     gameIndexCounter++;
                 });
-
-                console.log("Loaded game list from file");
-                console.log(this.gameList);
-
+                //load the application
                 this.loadApplication();
             })
             .catch(error => {
+                //catch error 
                 console.error('Error loading game data:', error);
             });
     }
@@ -133,13 +139,17 @@ export class Application {
      * Loads the application to show either the menu page or the game page.
      */
     private loadApplication(): void {
+        //check showingMenu 
         if (this.showingMenu) {
+            //display game list if true
             this.display.showGameList(this.gameList);
         } else {
+            //retrieve game index from local storage
             const currentGameIndex = localStorage.getItem("currentGameIndex");
             if (Number(currentGameIndex) >= this.gameList.length) {
                 this.createNewGame(Number(currentGameIndex));
             }
+            //set up current game and run game
             this.currentGame = this.gameList[currentGameIndex];
             this.currentGame.run(this.display);
             console.log(`Loaded Game\n  Index: ${currentGameIndex}\n  Name: ${this.currentGame.getName()}`);
@@ -150,26 +160,34 @@ export class Application {
      * Creates a new with an empty board and two teams (Cat and Dog by default).
      */
     private createNewGame(currentGameIndex?: number): void {
+        //create empty board history 
         const boardHistory: Board[] = [];
         boardHistory.push(new Board());
+        //create new game
         var newGame = new Game(boardHistory);
         if (currentGameIndex) {
             newGame = new Game(boardHistory, currentGameIndex);
         }
-
+        //add to gamelist
         this.gameList.push(newGame);
     }
-
+    /**
+     * Download game data as a simple txt file
+     */
     downloadGS():void {
+        //specify file name
         const fileName = "data.txt"
+        //request /download to server
         fetch('/download')
           .then(response => {
+            //check response
             if (!response.ok) {
                 throw new Error('Error while downloading the file');
               }
               return response.blob();
             })
           .then(content => {
+            //perform download file using blob
             const blob = new Blob([content], { type: 'text/plain' });
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -181,6 +199,7 @@ export class Application {
             document.body.removeChild(link);
             URL.revokeObjectURL(link.href);
           })
+          //carch error
           .catch(error => {
             console.error('Error while downloading the file:', error);
           });
