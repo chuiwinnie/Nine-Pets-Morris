@@ -1,3 +1,8 @@
+/**
+ * Established coding standards applied: Google TypeScript Style Guide (https://google.github.io/styleguide/tsguide.html)
+ */
+
+
 import { Board } from "./Board.js"
 import { Display } from "./Display.js";
 import { PlaceTokenAction } from "./Actions/PlaceTokenAction.js"
@@ -183,7 +188,6 @@ export class Game {
             }
         }
 
-
         // ask user for the game name
         var gameName = prompt('Enter the game name:');
 
@@ -205,25 +209,29 @@ export class Game {
      * @param gameName The name of the game.
      */
     async saveToFile(gameName: String, gameIndex?: number): Promise<void> {
-        //parsing all boards in boardHistory to JSON
+        // parse all boards in boardHistory to JSON
         const boardHistoryData = this.boardHistory.map((board) => board.toJSON());
-        //Stringify the data
+
+        // stringify the data
         const boardStrings = boardHistoryData.map((boardData) => JSON.stringify(boardData));
-        //adding newline charcter to each line
+
+        // add newline charcter to each line
         const requestBody = boardStrings.join('\n') + '\n';
-        //adding game name to the top of each game
+
+        // add game name to the top of each game
         const newRequestBody = gameName + '\n' + requestBody;
 
-        //requesting /save handler in server
+        // request /save handler in server
         let requestUrl = 'http://localhost:3000/save';
 
-        // If gameIndex is defined, it is sent through. If it is not, it is sent as -1 to indicate to push the game
+        // If gameIndex is defined, it is sent through. If it is not defined, it is sent as -1 to indicate to push the game.
         if (gameIndex !== undefined) {
             requestUrl += `?gameIndex=${gameIndex}`;
         } else {
             requestUrl += `?gameIndex=-1`;
         }
-        //wait for the server response
+
+        // wait for the server response
         const response = await fetch(requestUrl, {
             method: 'POST',
             headers: {
@@ -231,7 +239,8 @@ export class Game {
             },
             body: newRequestBody,
         });
-        //check if error appeared
+
+        // check if error appeared
         if (response.ok) {
             console.log('Data saved successfully');
         } else {

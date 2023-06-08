@@ -1,3 +1,8 @@
+/**
+ * Established coding standards applied: Google TypeScript Style Guide (https://google.github.io/styleguide/tsguide.html)
+ */
+
+
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -93,15 +98,15 @@ app.post('/save', (req, res) => {
 
       gameObjects.push(game);
     });
-    
+
     // New game, push to the end of the array
     if (gameIndex == -1) {
       gameObjects.push(newGameObject)
-    // Existing game an index given by gameIndex
     } else if (gameIndex >= 0) {
+      // Existing game an index given by gameIndex
       gameObjects[gameIndex] = newGameObject;
-    // Invalid gameIndex
     } else {
+      // Invalid gameIndex
       console.error('Received empty or invalid JSON data or gameIndex');
       res.status(400).send('Received empty or invalid JSON data or gameIndex');
       return;

@@ -1,3 +1,8 @@
+/**
+ * Established coding standards applied: Google TypeScript Style Guide (https://google.github.io/styleguide/tsguide.html)
+ */
+
+
 import { Game } from "./Game.js";
 import { Board } from "./Board.js";
 import { Application } from "./Application.js";
