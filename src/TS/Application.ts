@@ -174,7 +174,7 @@ export class Application {
     /**
      * Download game data as a simple txt file
      */
-    downloadGS():void {
+    downloadGameData():void {
         //specify file name
         const fileName = "data.txt"
         //request /download to server
