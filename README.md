@@ -25,10 +25,9 @@ Alternatively, follow the steps below to compile and run the 9MM application.
 
 #### doc/Sprint1
 This folder contains all the Sprint 1 deliverables/documents in PDF format, including:
-1. Team Information
-2. User Stories
-3. Architecture
-4. UI Design
+1. User Stories
+2. Architecture
+3. UI Design
 
 #### doc/Sprint2
 This folder contains all the Sprint 2 deliverables/documents in a single PDF, including:
