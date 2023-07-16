@@ -1,4 +1,4 @@
-# FIT3077 Project
+# Nine Pets' Morris
 
 ### Application Setup
 Click on the following link to run the 9MM application:
@@ -9,45 +9,3 @@ Alternatively, follow the steps below to compile and run the 9MM application.
 2. Open directory into `src`
 3. Run `npm start`
 4. Click on the following link: http://localhost:3000/menu
-
----
-
-### Team Information
-
-<b>Team 19 - Pet Store:</b>
-1. Suey Ho
-2. Jiawei Liao
-3. Winnie Chui
-
----
-
-### Repository Structure
-
-#### doc/Sprint1
-This folder contains all the Sprint 1 deliverables/documents in PDF format, including:
-1. User Stories
-2. Architecture
-3. UI Design
-
-#### doc/Sprint2
-This folder contains all the Sprint 2 deliverables/documents in a single PDF, including:
-1. Architecture
-2. Design Rationales
-
-#### doc/Sprint3
-This folder contains all the Sprint 3 deliverables/documents in a single PDF, including:
-1. Design Rationales
-2. Demonstration Video Link (https://youtu.be/HRHcCw7QSfo)
-3. Sequence Diagrams
-4. Architecture
-
-#### doc/Sprint4
-This folder contains all the Sprint 4 deliverables/documents in a single PDF, including:
-1. Design Rationales
-2. Revised Architecture
-3. Revised User Stories
-
-The Sprint 4 Demonstration Video is available via: https://youtu.be/jiAhqRdz2LI
-
-#### src
-This folder contains all the code for the 9MM aplication.
